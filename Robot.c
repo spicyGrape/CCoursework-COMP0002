@@ -1,6 +1,19 @@
 #include "Robot.h"
 #include "Arena.h"
 
+<<<<<<< HEAD
+=======
+void initRobot()
+{
+    robot.x = START_X;
+    robot.y = START_Y;
+    arenaMap[robot.y][robot.x] = 'R';
+    robot.direction = 'N';
+    robot.markers = 0;
+    return;
+}
+
+>>>>>>> 27fcdd4 (Implemented robot API)
 void pickUpMarker()
 {
     if (arenaMap[robot.y][robot.x] == 'X')
@@ -57,6 +70,7 @@ void leaveTile(int x, int y)
     return;
 }
 
+<<<<<<< HEAD
 void initRobot()
 {
     robot.x = START_X;
@@ -67,6 +81,8 @@ void initRobot()
     return;
 }
 
+=======
+>>>>>>> 27fcdd4 (Implemented robot API)
 int canMoveForward()
 {
     if (robot.direction == 'N')
