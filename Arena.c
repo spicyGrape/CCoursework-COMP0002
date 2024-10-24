@@ -19,12 +19,6 @@ void printArena()
 }
 #endif
 
-void initWindow()
-{
-    setWindowSize(ARENA_WIDTH * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
-    return;
-}
-
 void initBorder()
 {
     // Set border to 'B'
@@ -76,7 +70,6 @@ void initMap()
 
 void setupArena()
 {
-    initWindow();
     initMap();
 }
 int main()

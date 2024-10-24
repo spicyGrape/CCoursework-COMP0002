@@ -40,3 +40,9 @@ void drawGrid()
     }
     return;
 }
+
+void initWindow()
+{
+    setWindowSize(ARENA_WIDTH * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+    return;
+}
