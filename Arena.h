@@ -4,6 +4,10 @@
 #define ARENA_WIDTH 14
 #define ARENA_HEIGHT 10
 void setupArena();
-void NewFunction(int height, int width);
+
+// 2D array to store the arena map
+// B - Border, M - Marker, O - Obstacle, ' ' - Empty
+// R - Robot, X - Robot with marker
 extern char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
+
 #endif
