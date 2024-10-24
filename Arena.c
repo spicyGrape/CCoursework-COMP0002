@@ -1,5 +1,5 @@
-#include "graphics.h"
 #include "Arena.h"
+#include "Robot.h"
 
 char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
 #define DEBUG
@@ -63,18 +63,17 @@ void initMap()
     initBorder();
     initObstacles();
     initMarkers();
-#ifdef DEBUG
-    printArena();
-#endif
     return;
 }
 
 void setupArena()
 {
     initMap();
+    initRobot();
 }
 int main()
 {
     setupArena();
+    printArena();
     return 0;
 }

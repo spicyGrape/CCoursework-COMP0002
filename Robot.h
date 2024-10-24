@@ -1,5 +1,9 @@
 #ifndef ROBOT_H
 #define ROBOT_H
+#include "Arena.h"
+
+void initRobot();
+
 void forward();
 void left();
 void right();

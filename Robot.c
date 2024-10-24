@@ -1,5 +1,6 @@
 #include "Robot.h"
-#include "Arena.h"
+
+Robot robot;
 
 void initRobot()
 {
