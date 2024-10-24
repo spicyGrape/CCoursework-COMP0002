@@ -1,11 +1,13 @@
 #include "Arena.h"
 #include "Robot.h"
-
+#include "Agent.h"
 char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
 #define DEBUG
 #ifdef DEBUG
 // only for debugging
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 void printArena()
 {
     for (int i = 0; i < ARENA_HEIGHT; i++)
@@ -75,5 +77,12 @@ int main()
 {
     setupArena();
     printArena();
+    while (1)
+    {
+        system("clear");
+        operateRobot();
+        printArena();
+        usleep(500000);
+    }
     return 0;
 }
