@@ -6,6 +6,7 @@ char arenaMap[ARENA_HEIGHT][ARENA_WIDTH];
 void initWindow()
 {
     setWindowSize(ARENA_WIDTH * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+    return;
 }
 
 void drawBorder()
@@ -19,14 +20,31 @@ void drawBorder()
     fillRect(0, 0, TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
     // Right border
     fillRect((ARENA_WIDTH - 1) * TILE_WIDTH, 0, TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+    return;
+}
+
+void drawGrid()
+{
+    setColour(gray);
+    // Vertical lines
+    for (int i = 0; i < ARENA_HEIGHT; i++)
+    {
+        drawLine(0, i * TILE_WIDTH, ARENA_WIDTH * TILE_WIDTH, i * TILE_WIDTH);
+    }
+    // Horizontal lines
+    for (int i = 0; i < ARENA_WIDTH; i++)
+    {
+        drawLine(i * TILE_WIDTH, 0, i * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+    }
+    return;
 }
 
 void drawArena()
 {
     background();
     initWindow();
+    drawGrid();
     drawBorder();
-    // drawGrid();
-    // drawObstacles();
     // drawMarkers();
+    // drawObstacles();
 }
