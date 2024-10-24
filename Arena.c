@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "Arena.h"
 
+char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
 #define DEBUG
 #ifdef DEBUG
 // only for debugging
