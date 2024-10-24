@@ -4,6 +4,6 @@
 #include "Arena.h"
 #include "Robot.h"
 void drawMap();
-void drawRobot();
+void drawRobot(Robot *robot);
 void drawGrid();
 #endif

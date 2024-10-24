@@ -1,45 +1,44 @@
 #include "Robot.h"
-
-Robot robot;
-
-void initRobot()
+#include <stdlib.h>
+Robot *initRobot()
 {
-    robot.x = START_X;
-    robot.y = START_Y;
-    arenaMap[robot.y][robot.x] = 'R';
-    robot.direction = 'N';
-    robot.markers = 0;
-    return;
+    Robot *robot = (Robot *)malloc(sizeof(Robot));
+    robot->x = START_X;
+    robot->y = START_Y;
+    arenaMap[robot->y][robot->x] = 'R';
+    robot->direction = 'N';
+    robot->markers = 0;
+    return robot;
 }
 
-void pickUpMarker()
+void pickUpMarker(Robot *robot)
 {
-    if (arenaMap[robot.y][robot.x] == 'X')
+    if (arenaMap[robot->y][robot->x] == 'X')
     {
-        arenaMap[robot.y][robot.x] = 'R';
-        robot.markers++;
+        arenaMap[robot->y][robot->x] = 'R';
+        robot->markers++;
     }
     return;
 }
 
-void dropMarker()
+void dropMarker(Robot *robot)
 {
-    if (arenaMap[robot.y][robot.x] == 'R')
+    if (arenaMap[robot->y][robot->x] == 'R')
     {
-        arenaMap[robot.y][robot.x] = 'X';
-        robot.markers--;
+        arenaMap[robot->y][robot->x] = 'X';
+        robot->markers--;
     }
     return;
 }
 
-int markerCount()
+int markerCount(Robot *robot)
 {
-    return robot.markers;
+    return robot->markers;
 }
 
-int atMarker()
+int atMarker(Robot *robot)
 {
-    return (arenaMap[robot.y][robot.x] == 'X');
+    return (arenaMap[robot->y][robot->x] == 'X');
 }
 
 void enterTile(int x, int y)
@@ -68,88 +67,88 @@ void leaveTile(int x, int y)
     return;
 }
 
-int canMoveForward()
+int canMoveForward(Robot *robot)
 {
-    if (robot.direction == 'N')
+    if (robot->direction == 'N')
     {
-        return (arenaMap[robot.y - 1][robot.x] != 'B' && arenaMap[robot.y - 1][robot.x] != 'O');
+        return (arenaMap[robot->y - 1][robot->x] != 'B' && arenaMap[robot->y - 1][robot->x] != 'O');
     }
-    else if (robot.direction == 'E')
+    else if (robot->direction == 'E')
     {
-        return (arenaMap[robot.y][robot.x + 1] != 'B' && arenaMap[robot.y][robot.x + 1] != 'O');
+        return (arenaMap[robot->y][robot->x + 1] != 'B' && arenaMap[robot->y][robot->x + 1] != 'O');
     }
-    else if (robot.direction == 'S')
+    else if (robot->direction == 'S')
     {
-        return (arenaMap[robot.y + 1][robot.x] != 'B' && arenaMap[robot.y + 1][robot.x] != 'O');
+        return (arenaMap[robot->y + 1][robot->x] != 'B' && arenaMap[robot->y + 1][robot->x] != 'O');
     }
-    else if (robot.direction == 'W')
+    else if (robot->direction == 'W')
     {
-        return (arenaMap[robot.y][robot.x - 1] != 'B' && arenaMap[robot.y][robot.x - 1] != 'O');
+        return (arenaMap[robot->y][robot->x - 1] != 'B' && arenaMap[robot->y][robot->x - 1] != 'O');
     }
     return 0;
 }
 
-void forward()
+void forward(Robot *robot)
 {
-    leaveTile(robot.x, robot.y);
-    if (robot.direction == 'N')
+    leaveTile(robot->x, robot->y);
+    if (robot->direction == 'N')
     {
-        robot.y--;
+        robot->y--;
     }
-    else if (robot.direction == 'E')
+    else if (robot->direction == 'E')
     {
-        robot.x++;
+        robot->x++;
     }
-    else if (robot.direction == 'S')
+    else if (robot->direction == 'S')
     {
-        robot.y++;
+        robot->y++;
     }
-    else if (robot.direction == 'W')
+    else if (robot->direction == 'W')
     {
-        robot.x--;
+        robot->x--;
     }
-    enterTile(robot.x, robot.y);
+    enterTile(robot->x, robot->y);
     return;
 }
 
-void left()
+void left(Robot *robot)
 {
-    if (robot.direction == 'N')
+    if (robot->direction == 'N')
     {
-        robot.direction = 'W';
+        robot->direction = 'W';
     }
-    else if (robot.direction == 'E')
+    else if (robot->direction == 'E')
     {
-        robot.direction = 'N';
+        robot->direction = 'N';
     }
-    else if (robot.direction == 'S')
+    else if (robot->direction == 'S')
     {
-        robot.direction = 'E';
+        robot->direction = 'E';
     }
-    else if (robot.direction == 'W')
+    else if (robot->direction == 'W')
     {
-        robot.direction = 'S';
+        robot->direction = 'S';
     }
     return;
 }
 
-void right()
+void right(Robot *robot)
 {
-    if (robot.direction == 'N')
+    if (robot->direction == 'N')
     {
-        robot.direction = 'E';
+        robot->direction = 'E';
     }
-    else if (robot.direction == 'E')
+    else if (robot->direction == 'E')
     {
-        robot.direction = 'S';
+        robot->direction = 'S';
     }
-    else if (robot.direction == 'S')
+    else if (robot->direction == 'S')
     {
-        robot.direction = 'W';
+        robot->direction = 'W';
     }
-    else if (robot.direction == 'W')
+    else if (robot->direction == 'W')
     {
-        robot.direction = 'N';
+        robot->direction = 'N';
     }
     return;
 }

@@ -1,21 +1,5 @@
 #ifndef ROBOT_H
 #define ROBOT_H
-#include "Arena.h"
-
-void initRobot();
-
-void forward();
-void left();
-void right();
-int atMarker();
-int canMoveForward();
-void pickUpMarker();
-void dropMarker();
-int markerCount();
-
-#define START_X 3
-#define START_Y 3
-
 typedef struct
 {
     // x is along the dierction of width
@@ -30,5 +14,21 @@ typedef struct
 
     int markers;
 } Robot;
-extern Robot robot;
+#include "Arena.h"
+
+Robot *initRobot();
+
+void forward(Robot *robot);
+void left(Robot *robot);
+void right(Robot *robot);
+int atMarker(Robot *robot);
+int canMoveForward(Robot *robot);
+void pickUpMarker(Robot *robot);
+void dropMarker(Robot *robot);
+int markerCount(Robot *robot);
+
+#define START_X 3
+#define START_Y 3
+
+// extern Robot robot;
 #endif

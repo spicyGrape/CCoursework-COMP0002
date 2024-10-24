@@ -1,16 +1,16 @@
 #include "Agent.h"
 
-void operateRobot()
+void operateRobot(Robot *robot)
 {
     // Forward
-    if (canMoveForward())
+    if (canMoveForward(robot))
     {
-        forward();
+        forward(robot);
     }
     // Left
     else
     {
-        left();
+        left(robot);
     }
     return;
 }

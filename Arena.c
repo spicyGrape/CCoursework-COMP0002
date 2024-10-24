@@ -68,21 +68,17 @@ void initMap()
     return;
 }
 
-void setupArena()
-{
-    initMap();
-    initRobot();
-}
 int main()
 {
-    setupArena();
+    initMap();
+    Robot *robot = initRobot();
     drawMap();
     drawGrid();
 
     while (1)
     {
-        operateRobot();
-        drawRobot();
+        operateRobot(robot);
+        drawRobot(robot);
         sleep(100);
     }
     return 0;
