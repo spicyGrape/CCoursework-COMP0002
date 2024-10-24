@@ -39,12 +39,19 @@ void drawGrid()
     return;
 }
 
+void drawMarkers()
+{
+    setColour(gray);
+    fillRect(7 * TILE_WIDTH, 2 * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+    return;
+}
+
 void drawArena()
 {
     background();
     initWindow();
     drawGrid();
     drawBorder();
-    // drawMarkers();
+    drawMarkers();
     // drawObstacles();
 }
