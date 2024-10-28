@@ -60,28 +60,26 @@ void drawRobot(Robot *robot)
     foreground();
     setColour(green);
     clear();
-    if (robot->direction == 'N')
+    int x[] = {robot->apex.x, robot->left.x, robot->right.x};
+    int y[] = {robot->apex.y, robot->left.y, robot->right.y};
+    fillPolygon(3, x, y);
+}
+void drawMovingRobot(Robot *robot)
+{
+    Robot prevrobot = *robot;
+    updateRobotVertices(&prevrobot);
+    int xStep = (prevrobot.apex.x - robot->apex.x) / TILE_WIDTH;
+    int yStep = (prevrobot.apex.y - robot->apex.y) / TILE_WIDTH;
+    for (int i = 0; i < TILE_WIDTH; i++)
     {
-        int x[3] = {robot->x * TILE_WIDTH, (robot->x + 1) * TILE_WIDTH, robot->x * TILE_WIDTH + TILE_WIDTH / 2};
-        int y[3] = {(robot->y + 1) * TILE_WIDTH, (robot->y + 1) * TILE_WIDTH, robot->y * TILE_WIDTH};
-        fillPolygon(3, x, y);
+        robot->apex.x += xStep;
+        robot->apex.y += yStep;
+        robot->left.x += xStep;
+        robot->left.y += yStep;
+        robot->right.x += xStep;
+        robot->right.y += yStep;
+        drawRobot(robot);
+        sleep(5);
     }
-    else if (robot->direction == 'E')
-    {
-        int x[3] = {robot->x * TILE_WIDTH, robot->x * TILE_WIDTH, (robot->x + 1) * TILE_WIDTH};
-        int y[3] = {robot->y * TILE_WIDTH, (robot->y + 1) * TILE_WIDTH, robot->y * TILE_WIDTH + TILE_WIDTH / 2};
-        fillPolygon(3, x, y);
-    }
-    else if (robot->direction == 'S')
-    {
-        int x[3] = {robot->x * TILE_WIDTH, (robot->x + 1) * TILE_WIDTH, robot->x * TILE_WIDTH + TILE_WIDTH / 2};
-        int y[3] = {robot->y * TILE_WIDTH, robot->y * TILE_WIDTH, (robot->y + 1) * TILE_WIDTH};
-        fillPolygon(3, x, y);
-    }
-    else if (robot->direction == 'W')
-    {
-        int x[3] = {(robot->x + 1) * TILE_WIDTH, (robot->x + 1) * TILE_WIDTH, robot->x * TILE_WIDTH};
-        int y[3] = {(robot->y + 1) * TILE_WIDTH, robot->y * TILE_WIDTH, robot->y * TILE_WIDTH + TILE_WIDTH / 2};
-        fillPolygon(3, x, y);
-    }
+    updateRobotVertices(robot);
 }

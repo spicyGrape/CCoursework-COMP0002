@@ -2,6 +2,11 @@
 #define ROBOT_H
 typedef struct
 {
+    int x;
+    int y;
+} Point;
+typedef struct
+{
     // x is along the dierction of width
     int x;
 
@@ -12,11 +17,18 @@ typedef struct
     // N, E, S, W
     char direction;
 
+    // Managing the robot's position on screen
+    Point apex;
+    Point left;
+    Point right;
+
     int markers;
 } Robot;
 #include "Arena.h"
+#include "View.h"
 
 Robot *initRobot();
+void updateRobotVertices(Robot *robot);
 
 void forward(Robot *robot);
 void left(Robot *robot);

@@ -79,7 +79,6 @@ int main()
     {
         operateRobot(robot);
         drawRobot(robot);
-        sleep(100);
     }
     return 0;
 }

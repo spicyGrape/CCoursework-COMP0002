@@ -1,5 +1,45 @@
 #include "Robot.h"
 #include <stdlib.h>
+void updateRobotVertices(Robot *robot)
+{
+    if (robot->direction == 'N')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->apex.y = robot->y * TILE_WIDTH;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+    }
+    else if (robot->direction == 'S')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH;
+    }
+    else if (robot->direction == 'E')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+    }
+    else if (robot->direction == 'W')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->left.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH;
+    }
+}
+
 Robot *initRobot()
 {
     Robot *robot = (Robot *)malloc(sizeof(Robot));
@@ -7,6 +47,7 @@ Robot *initRobot()
     robot->y = START_Y;
     arenaMap[robot->y][robot->x] = 'R';
     robot->direction = 'N';
+    updateRobotVertices(robot);
     robot->markers = 0;
     return robot;
 }
@@ -107,6 +148,7 @@ void forward(Robot *robot)
     {
         robot->x--;
     }
+    drawMovingRobot(robot);
     enterTile(robot->x, robot->y);
     return;
 }
@@ -129,6 +171,7 @@ void left(Robot *robot)
     {
         robot->direction = 'S';
     }
+    updateRobotVertices(robot);
     return;
 }
 
@@ -150,5 +193,6 @@ void right(Robot *robot)
     {
         robot->direction = 'N';
     }
+    updateRobotVertices(robot);
     return;
 }
