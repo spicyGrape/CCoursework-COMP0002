@@ -72,12 +72,13 @@ int main()
 {
     initMap();
     Robot *robot = initRobot();
+    Agent *agent = initAgent();
     drawMap();
     drawGrid();
 
     while (1)
     {
-        operateRobot(robot);
+        operateRobot(robot, agent);
         drawRobot(robot);
     }
     return 0;
