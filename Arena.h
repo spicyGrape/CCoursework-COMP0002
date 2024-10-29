@@ -3,11 +3,11 @@
 #define TILE_WIDTH 30
 #define ARENA_WIDTH 14
 #define ARENA_HEIGHT 10
+#include "Robot.h"
 void setupArena();
-
-// 2D array to store the arena map
-// B - Border, M - Marker, O - Obstacle, ' ' - Empty
-// R - Robot, X - Robot with marker
-extern char arenaMap[ARENA_HEIGHT][ARENA_WIDTH];
-
+int robotCanMoveForward(Robot *robot);
+int robotAtMarker(Robot *robot);
+void robotDropMarker(Robot *robot);
+void robotPickUpMarker(Robot *robot);
+void updateMap(Robot *robot);
 #endif

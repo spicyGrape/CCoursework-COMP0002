@@ -28,7 +28,6 @@ typedef struct
 #include "View.h"
 
 Robot *initRobot();
-void updateRobotVertices(Robot *robot);
 
 void forward(Robot *robot);
 void left(Robot *robot);

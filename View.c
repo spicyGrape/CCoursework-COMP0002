@@ -1,5 +1,46 @@
 #include "View.h"
-void drawMap()
+
+void updateRobotVertices(Robot *robot)
+{
+    if (robot->direction == 'N')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->apex.y = robot->y * TILE_WIDTH;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+    }
+    else if (robot->direction == 'S')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH;
+    }
+    else if (robot->direction == 'E')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->left.x = robot->x * TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+    }
+    else if (robot->direction == 'W')
+    {
+        robot->apex.x = robot->x * TILE_WIDTH;
+        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
+        robot->left.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
+        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
+        robot->right.y = robot->y * TILE_WIDTH;
+    }
+}
+
+void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
 {
     background();
     // Check each tile in the arenaMap
@@ -55,6 +96,16 @@ void initWindow()
     return;
 }
 
+void initView(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH], Robot *robot)
+{
+    initWindow();
+    drawGrid();
+    drawMap(arenaMap);
+    updateRobotVertices(robot);
+    drawRobot(robot);
+    return;
+}
+
 void drawRobot(Robot *robot)
 {
     foreground();
@@ -64,6 +115,7 @@ void drawRobot(Robot *robot)
     int y[] = {robot->apex.y, robot->left.y, robot->right.y};
     fillPolygon(3, x, y);
 }
+
 void drawMovingRobot(Robot *robot)
 {
     // Create a previous robot to preview the movement
@@ -72,16 +124,24 @@ void drawMovingRobot(Robot *robot)
 
     int xStep = (prevrobot.apex.x - robot->apex.x) / TILE_WIDTH;
     int yStep = (prevrobot.apex.y - robot->apex.y) / TILE_WIDTH;
-    for (int i = 0; i < TILE_WIDTH; i++)
+    if (xStep || yStep)
     {
-        robot->apex.x += xStep;
-        robot->apex.y += yStep;
-        robot->left.x += xStep;
-        robot->left.y += yStep;
-        robot->right.x += xStep;
-        robot->right.y += yStep;
-        drawRobot(robot);
-        sleep(FRAME_TIME);
+        for (int i = 0; i < TILE_WIDTH; i++)
+        {
+            robot->apex.x += xStep;
+            robot->apex.y += yStep;
+            robot->left.x += xStep;
+            robot->left.y += yStep;
+            robot->right.x += xStep;
+            robot->right.y += yStep;
+            drawRobot(robot);
+            sleep(FRAME_TIME);
+        }
+        updateRobotVertices(robot);
     }
-    updateRobotVertices(robot);
+    else
+    {
+        updateRobotVertices(robot);
+        drawRobot(robot);
+    }
 }

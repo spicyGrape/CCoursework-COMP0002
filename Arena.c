@@ -2,7 +2,12 @@
 #include "Robot.h"
 #include "Agent.h"
 #include "View.h"
+
+// 2D array to store the arena map
+// B - Border, M - Marker, O - Obstacle, ' ' - Empty
+// R - Robot, X - Robot with marker
 char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
+
 #define DEBUG
 #ifdef DEBUG
 // only for debugging
@@ -68,18 +73,90 @@ void initMap()
     return;
 }
 
+void updateMap(Robot *robot)
+{
+    for (int i = 0; i < ARENA_HEIGHT; i++)
+    {
+        for (int j = 0; j < ARENA_WIDTH; j++)
+        {
+            if (arenaMap[i][j] == 'R')
+            {
+                arenaMap[i][j] = ' ';
+            }
+            else if (arenaMap[i][j] == 'X')
+            {
+                arenaMap[i][j] = 'M';
+            }
+            if (i == robot->y && j == robot->x)
+            {
+                if (arenaMap[i][j] == 'M')
+                {
+                    arenaMap[i][j] = 'X';
+                }
+                else
+                {
+                    arenaMap[i][j] = 'R';
+                }
+            }
+        }
+    }
+}
+int robotCanMoveForward(Robot *robot)
+{
+    if (robot->direction == 'N')
+    {
+        return (arenaMap[robot->y - 1][robot->x] != 'B' && arenaMap[robot->y - 1][robot->x] != 'O');
+    }
+    else if (robot->direction == 'E')
+    {
+        return (arenaMap[robot->y][robot->x + 1] != 'B' && arenaMap[robot->y][robot->x + 1] != 'O');
+    }
+    else if (robot->direction == 'S')
+    {
+        return (arenaMap[robot->y + 1][robot->x] != 'B' && arenaMap[robot->y + 1][robot->x] != 'O');
+    }
+    else if (robot->direction == 'W')
+    {
+        return (arenaMap[robot->y][robot->x - 1] != 'B' && arenaMap[robot->y][robot->x - 1] != 'O');
+    }
+    return 0;
+}
+int robotAtMarker(Robot *robot)
+{
+    return (arenaMap[robot->y][robot->x] == 'X');
+}
+void robotDropMarker(Robot *robot)
+{
+    if (arenaMap[robot->y][robot->x] == 'R')
+    {
+        arenaMap[robot->y][robot->x] = 'X';
+        robot->markers--;
+    }
+    return;
+}
+
+void robotPickUpMarker(Robot *robot)
+{
+    if (arenaMap[robot->y][robot->x] == 'X')
+    {
+        arenaMap[robot->y][robot->x] = 'R';
+        robot->markers++;
+    }
+    return;
+}
+
 int main()
 {
     initMap();
     Robot *robot = initRobot();
     Agent *agent = initAgent();
-    drawMap();
-    drawGrid();
-
+    updateMap(robot);
+    initView(arenaMap, robot);
     while (1)
     {
         operateRobot(robot, agent);
-        drawRobot(robot);
+        updateMap(robot);
+        drawMovingRobot(robot);
     }
     return 0;
 }
