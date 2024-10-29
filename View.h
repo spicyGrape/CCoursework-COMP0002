@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "Arena.h"
 #include "Robot.h"
+#define FRAME_TIME 5
 void drawMap();
 void drawMovingRobot(Robot *robot);
 void drawTurnLeft(Robot *robot);

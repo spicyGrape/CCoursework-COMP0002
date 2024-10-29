@@ -66,8 +66,10 @@ void drawRobot(Robot *robot)
 }
 void drawMovingRobot(Robot *robot)
 {
+    // Create a previous robot to preview the movement
     Robot prevrobot = *robot;
     updateRobotVertices(&prevrobot);
+
     int xStep = (prevrobot.apex.x - robot->apex.x) / TILE_WIDTH;
     int yStep = (prevrobot.apex.y - robot->apex.y) / TILE_WIDTH;
     for (int i = 0; i < TILE_WIDTH; i++)
@@ -79,7 +81,7 @@ void drawMovingRobot(Robot *robot)
         robot->right.x += xStep;
         robot->right.y += yStep;
         drawRobot(robot);
-        sleep(5);
+        sleep(FRAME_TIME);
     }
     updateRobotVertices(robot);
 }
