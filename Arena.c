@@ -101,6 +101,7 @@ void updateMap(Robot *robot)
         }
     }
 }
+
 int robotCanMoveForward(Robot *robot)
 {
     if (robot->direction == 'N')
@@ -121,10 +122,12 @@ int robotCanMoveForward(Robot *robot)
     }
     return 0;
 }
+
 int robotAtMarker(Robot *robot)
 {
     return (arenaMap[robot->y][robot->x] == 'X');
 }
+
 void robotDropMarker(Robot *robot)
 {
     if (arenaMap[robot->y][robot->x] == 'R')
