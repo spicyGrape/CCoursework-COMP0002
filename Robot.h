@@ -29,6 +29,7 @@ typedef struct
 
 Robot *initRobot();
 
+// Required API for the robot
 void forward(Robot *robot);
 void left(Robot *robot);
 void right(Robot *robot);
@@ -41,5 +42,4 @@ int markerCount(Robot *robot);
 #define START_X 3
 #define START_Y 3
 
-// extern Robot robot;
 #endif
