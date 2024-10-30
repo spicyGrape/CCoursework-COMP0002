@@ -10,5 +10,4 @@ void drawMovingRobot(Robot *robot);
 void drawTurnLeft(Robot *robot);
 void drawTurnRight(Robot *robot);
 void drawRobot(Robot *robot);
-void drawGrid();
 #endif

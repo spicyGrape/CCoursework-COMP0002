@@ -1,5 +1,8 @@
 #include "View.h"
 
+// Prviate functions
+void drawGrid();
+
 void updateRobotVertices(Robot *robot)
 {
     if (robot->direction == 'N')
@@ -43,6 +46,7 @@ void updateRobotVertices(Robot *robot)
 void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
 {
     background();
+    clear();
     // Check each tile in the arenaMap
     for (int height = 0; height < ARENA_HEIGHT; height++)
     {
@@ -70,6 +74,7 @@ void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
             }
         }
     }
+    drawGrid();
     return;
 }
 
@@ -99,7 +104,6 @@ void initWindow()
 void initView(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH], Robot *robot)
 {
     initWindow();
-    drawGrid();
     drawMap(arenaMap);
     updateRobotVertices(robot);
     drawRobot(robot);
@@ -142,6 +146,8 @@ void drawMovingRobot(Robot *robot)
     else
     {
         updateRobotVertices(robot);
+        sleep(FRAME_TIME * TILE_WIDTH / 2);
         drawRobot(robot);
+        sleep(FRAME_TIME * TILE_WIDTH / 2);
     }
 }
