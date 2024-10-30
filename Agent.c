@@ -3,18 +3,20 @@
 // So it has to keep an independent map of the arena.
 
 #include "Agent.h"
+#include <limits.h>
 
-// Private type
+// Private type and variables
 typedef struct
 {
     int x;
     int y;
 } DirectionVector;
 
+int stepCount = 0;
+
 // Private functions
 DirectionVector getDirectionVector(int direction);
 int lookAround(Robot *robot, Agent *agent);
-void updateInterestsMap(Agent *agent);
 void agentLeft(Robot *robot, Agent *agent);
 void agentRight(Robot *robot, Agent *agent);
 
@@ -24,21 +26,31 @@ void operateRobot(Robot *robot, Agent *agent)
     {
         pickUpMarker(robot);
     }
-    updateInterestsMap(agent);
     int bestDirection = lookAround(robot, agent);
+    // If bestDirection is 0, i.e. current direction,
+    // it means the robot can move forward.
     if (!bestDirection)
     {
-        agent->interestsMap[agent->curPosition.y][agent->curPosition.x] = 1;
         DirectionVector dVec = getDirectionVector(agent->curDirection);
         agent->curPosition.x += dVec.x;
         agent->curPosition.y += dVec.y;
         forward(robot);
+        stepCount++;
+        agent->timeStampMap[agent->curPosition.y][agent->curPosition.x] = stepCount;
     }
     else
     {
-        for (int i = 0; i < bestDirection; i++)
+        switch (bestDirection)
         {
+        case 1:
             agentRight(robot, agent);
+            break;
+        case 2:
+            agentRight(robot, agent);
+            break;
+        case 3:
+            agentLeft(robot, agent);
+            break;
         }
     }
 }
@@ -46,20 +58,20 @@ void operateRobot(Robot *robot, Agent *agent)
 int lookAround(Robot *robot, Agent *agent)
 {
     Robot testerRobot = *robot;
-    int bestInterest = 0;
+    int earliestStep = INT_MAX;
     int bestDirection = 2;
     for (int i = 0; i < 4; i++)
     {
         DirectionVector dVec = getDirectionVector((agent->curDirection + i) % 4);
-        int *facingTileInterest;
-        facingTileInterest = &(agent->interestsMap[agent->curPosition.y + dVec.y][agent->curPosition.x + dVec.x]);
+        int *facingTileTimeStamp;
+        facingTileTimeStamp = &(agent->timeStampMap[agent->curPosition.y + dVec.y][agent->curPosition.x + dVec.x]);
         if (!(canMoveForward(&testerRobot)))
         {
-            *facingTileInterest = 0;
+            *facingTileTimeStamp = INT_MAX;
         }
-        if (*facingTileInterest > bestInterest)
+        if (*facingTileTimeStamp < earliestStep)
         {
-            bestInterest = *facingTileInterest;
+            earliestStep = *facingTileTimeStamp;
             bestDirection = i;
         }
         right(&testerRobot);
@@ -110,28 +122,14 @@ Agent *initAgent()
     Agent *agent = (Agent *)malloc(sizeof(Agent));
     agent->curPosition.x = MEMORY_MAP_SIZE / 2;
     agent->curPosition.y = MEMORY_MAP_SIZE / 2;
-    // Set default interest in all tiles to 1
+
+    // Initialize the timeStampsMap
     for (int i = 0; i < MEMORY_MAP_SIZE; i++)
     {
         for (int j = 0; j < MEMORY_MAP_SIZE; j++)
         {
-            agent->interestsMap[i][j] = 1;
+            agent->timeStampMap[i][j] = 0;
         }
     }
     return agent;
-}
-
-void updateInterestsMap(Agent *agent)
-{
-    for (int i = 0; i < MEMORY_MAP_SIZE; i++)
-    {
-        for (int j = 0; j < MEMORY_MAP_SIZE; j++)
-        {
-            if (agent->interestsMap[i][j])
-            {
-                agent->interestsMap[i][j] += 1;
-            }
-        }
-    }
-    return;
 }

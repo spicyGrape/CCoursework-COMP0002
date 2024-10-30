@@ -11,7 +11,7 @@ typedef struct
     // interestMap[HEIGHT][WIDTH]
     // All tiles are initially set to 1.
     // 0 means block or border
-    int interestsMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
+    int timeStampMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
 } Agent;
 
 Agent *initAgent();
