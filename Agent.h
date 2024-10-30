@@ -2,7 +2,7 @@
 #define AGENT_H
 #include "Robot.h"
 #include <stdlib.h>
-#define MEMORY_MAP_SIZE 100
+#define MEMORY_MAP_SIZE 30
 typedef struct
 {
     Point curPosition;

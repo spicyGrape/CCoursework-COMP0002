@@ -20,11 +20,15 @@ void agentRight(Robot *robot, Agent *agent);
 
 void operateRobot(Robot *robot, Agent *agent)
 {
+    if (atMarker(robot))
+    {
+        pickUpMarker(robot);
+    }
     updateInterestsMap(agent);
-    agent->interestsMap[agent->curPosition.y][agent->curPosition.x] = 1;
     int bestDirection = lookAround(robot, agent);
     if (!bestDirection)
     {
+        agent->interestsMap[agent->curPosition.y][agent->curPosition.x] = 1;
         DirectionVector dVec = getDirectionVector(agent->curDirection);
         agent->curPosition.x += dVec.x;
         agent->curPosition.y += dVec.y;
