@@ -6,12 +6,17 @@
 typedef struct
 {
     Point curPosition;
-    int curDirection; // 0, 1, 2, 3
 
-    // interestMap[HEIGHT][WIDTH]
-    // All tiles are initially set to 1.
-    // 0 means block or border
+    // Valid values: 0, 1, 2, 3
+    // Representing how many right turns from the initial direction
+    int curDirection;
+
+    // timeStampMap[HEIGHT][WIDTH]
+    // All tiles are initially set to 0.
+    // Recording the time stamp of the last visit
+    // Borders and obstacles are set to INT_MAX
     int timeStampMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
+    int stepCount;
 } Agent;
 
 Agent *initAgent();

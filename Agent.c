@@ -12,8 +12,6 @@ typedef struct
     int y;
 } DirectionVector;
 
-int stepCount = 0;
-
 // Private functions
 DirectionVector getDirectionVector(int direction);
 int lookAround(Robot *robot, Agent *agent);
@@ -26,17 +24,20 @@ void operateRobot(Robot *robot, Agent *agent)
     {
         pickUpMarker(robot);
     }
+
+    // Valid values: 0, 1, 2, 3
+    // Representing how many right turns from the current direction
     int bestDirection = lookAround(robot, agent);
-    // If bestDirection is 0, i.e. current direction,
-    // it means the robot can move forward.
+
+    // If bestDirection is current direction, move forward
     if (!bestDirection)
     {
         DirectionVector dVec = getDirectionVector(agent->curDirection);
         agent->curPosition.x += dVec.x;
         agent->curPosition.y += dVec.y;
         forward(robot);
-        stepCount++;
-        agent->timeStampMap[agent->curPosition.y][agent->curPosition.x] = stepCount;
+        agent->stepCount++;
+        agent->timeStampMap[agent->curPosition.y][agent->curPosition.x] = agent->stepCount;
     }
     else
     {
@@ -45,6 +46,10 @@ void operateRobot(Robot *robot, Agent *agent)
         case 1:
             agentRight(robot, agent);
             break;
+
+        // Best direction is backwards
+        // But agent should only call one robot API at a time
+        // So just turn Right
         case 2:
             agentRight(robot, agent);
             break;
@@ -131,5 +136,7 @@ Agent *initAgent()
             agent->timeStampMap[i][j] = 0;
         }
     }
+    agent->stepCount = 0;
+
     return agent;
 }
