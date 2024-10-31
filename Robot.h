@@ -1,11 +1,15 @@
 #ifndef ROBOT_H
 #define ROBOT_H
+#include "Arena.h"
+#include "View.h"
 typedef struct
 {
     int x;
     int y;
 } Point;
-typedef struct
+
+typedef struct arena Arena;
+typedef struct robot
 {
     // x is along the dierction of width
     int x;
@@ -13,6 +17,8 @@ typedef struct
     // y is height
     // y is inverted
     int y;
+
+    int markers;
 
     // N, E, S, W
     char direction;
@@ -22,12 +28,11 @@ typedef struct
     Point left;
     Point right;
 
-    int markers;
+    // Arena the robot is in
+    Arena *arena;
 } Robot;
-#include "Arena.h"
-#include "View.h"
 
-Robot *initRobot();
+Robot *initRobot(Arena *arena);
 
 // Required API for the robot
 void forward(Robot *robot);
@@ -39,7 +44,7 @@ void pickUpMarker(Robot *robot);
 void dropMarker(Robot *robot);
 int markerCount(Robot *robot);
 
-#define START_X 3
-#define START_Y 3
+#define START_X 4
+#define START_Y 4
 
 #endif

@@ -4,8 +4,10 @@
 #include "Arena.h"
 #include "Robot.h"
 #define FRAME_TIME 5
-void initView(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH], Robot *robot);
-void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH]);
+typedef struct robot Robot;
+typedef struct arena Arena;
+void initView(Arena *arena, Robot *robot);
+void drawMap(Arena *arena);
 void drawMovingRobot(Robot *robot);
 void drawTurnLeft(Robot *robot);
 void drawTurnRight(Robot *robot);

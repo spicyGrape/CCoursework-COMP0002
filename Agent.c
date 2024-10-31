@@ -5,6 +5,9 @@
 #include "Agent.h"
 #include <limits.h>
 
+// debug only
+#include <stdio.h>
+
 // Private type and variables
 typedef struct
 {
@@ -20,6 +23,10 @@ void agentRight(Robot *robot, Agent *agent);
 
 void operateRobot(Robot *robot, Agent *agent)
 {
+    // debug only
+    // print current step count
+    printf("Step count: %d\n", agent->stepCount);
+
     if (atMarker(robot))
     {
         pickUpMarker(robot);

@@ -1,164 +1,200 @@
 #include "Arena.h"
-#include "Robot.h"
 #include "Agent.h"
 #include "View.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+// debug only
+#include <time.h>
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
 // R - Robot, X - Robot with marker
-char arenaMap[ARENA_HEIGHT][ARENA_WIDTH] = {};
+// char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
 
-#define DEBUG
-#ifdef DEBUG
-// only for debugging
-#include <stdio.h>
-#include <stdlib.h>
-void printArena()
-{
-    for (int i = 0; i < ARENA_HEIGHT; i++)
-    {
-        for (int j = 0; j < ARENA_WIDTH; j++)
-        {
-            printf("%c", arenaMap[i][j]);
-        }
-        printf("\n");
-    }
-    return;
-}
-#endif
-
-void initBorder()
+void initBorder(Arena *arena)
 {
     // Set border to 'B'
     // Top and bottom border
-    for (int i = 0; i < ARENA_WIDTH; i++)
+    for (int i = 0; i < arena->width; i++)
     {
-        arenaMap[0][i] = 'B';
-        arenaMap[ARENA_HEIGHT - 1][i] = 'B';
+        arena->map[0][i] = 'B';
+        arena->map[arena->height - 1][i] = 'B';
     }
+
     // Left and right border
-    for (int i = 0; i < ARENA_HEIGHT; i++)
+    for (int i = 0; i < arena->height; i++)
     {
-        arenaMap[i][0] = 'B';
-        arenaMap[i][ARENA_WIDTH - 1] = 'B';
+        arena->map[i][0] = 'B';
+        arena->map[i][arena->width - 1] = 'B';
     }
     return;
 }
 
-void initMarkers()
+void initMarkers(Arena *arena)
 {
-    // Set markers to 'M'
-    arenaMap[2][7] = 'M';
-    return;
-}
-
-void initObstacles()
-{
-    return;
-}
-
-void initMap()
-{
-    // Set all tiles to ' ', representing empty tiles
-    for (int i = 0; i < ARENA_HEIGHT; i++)
+    // Set tiles with a marker to 'M'
+    for (int i = 1; i < DEFAULT_ARENA_HEIGHT - 1; i++)
     {
-        for (int j = 0; j < ARENA_WIDTH; j++)
+        for (int j = 1; j < arena->width - 1; j++)
         {
-            arenaMap[i][j] = ' ';
+            arena->map[i][j] = 'M';
         }
     }
-    initBorder();
-    initObstacles();
-    initMarkers();
     return;
 }
 
-void updateMap(Robot *robot)
+void initObstacles(Arena *arena)
 {
-    for (int i = 0; i < ARENA_HEIGHT; i++)
+    // debug only
+    srand(time(NULL));
+
+    // Set obstacles to 'O'
+    // Obstacles are placed randomly
+    for (int i = 0; i < arena->height; i++)
     {
-        for (int j = 0; j < ARENA_WIDTH; j++)
+        for (int j = 0; j < arena->width; j++)
         {
-            if (arenaMap[i][j] == 'R')
+            if (arena->map[i][j] != 'B')
             {
-                arenaMap[i][j] = ' ';
+                if (rand() % 100 < 10)
+                {
+                    arena->map[i][j] = 'O';
+                }
             }
-            else if (arenaMap[i][j] == 'X')
+        }
+    }
+    return;
+}
+
+char **initMap(Arena *arena)
+{
+    char **map = (char **)malloc(arena->height * sizeof(char *));
+    for (int i = 0; i < arena->height; i++)
+    {
+        map[i] = (char *)malloc(arena->width * sizeof(char));
+
+        // set all tiles to ' ' (empty) by default
+        memset(map[i], ' ', arena->width);
+    }
+    return map;
+}
+
+Arena *initArena(int argc, char const **argv)
+{
+    Arena *arena = (Arena *)malloc(sizeof(Arena));
+    if (argc >= 2)
+    {
+        sscanf(argv[1], "(%d,%d)", &arena->width, &arena->height);
+    }
+    else
+    {
+        arena->width = DEFAULT_ARENA_WIDTH;
+        arena->height = DEFAULT_ARENA_HEIGHT;
+    }
+    arena->map = initMap(arena);
+    // Set all tiles to ' ', representing empty tiles
+    initBorder(arena);
+    initMarkers(arena);
+    initObstacles(arena);
+    return arena;
+}
+
+void updateMap(Arena *arena, Robot *robot)
+{
+    for (int i = 0; i < arena->height; i++)
+    {
+        for (int j = 0; j < arena->width; j++)
+        {
+            if (arena->map[i][j] == 'R')
             {
-                arenaMap[i][j] = 'M';
+                arena->map[i][j] = ' ';
+            }
+            else if (arena->map[i][j] == 'X')
+            {
+                arena->map[i][j] = 'M';
             }
             if (i == robot->y && j == robot->x)
             {
-                if (arenaMap[i][j] == 'M')
+                if (arena->map[i][j] == 'M')
                 {
-                    arenaMap[i][j] = 'X';
+                    arena->map[i][j] = 'X';
                 }
                 else
                 {
-                    arenaMap[i][j] = 'R';
+                    arena->map[i][j] = 'R';
                 }
             }
         }
     }
 }
 
-int robotCanMoveForward(Robot *robot)
+int robotCanMoveForward(Arena *arena, Robot *robot)
 {
     if (robot->direction == 'N')
     {
-        return (arenaMap[robot->y - 1][robot->x] != 'B' && arenaMap[robot->y - 1][robot->x] != 'O');
+        return (arena->map[robot->y - 1][robot->x] != 'B' && arena->map[robot->y - 1][robot->x] != 'O');
     }
     else if (robot->direction == 'E')
     {
-        return (arenaMap[robot->y][robot->x + 1] != 'B' && arenaMap[robot->y][robot->x + 1] != 'O');
+        return (arena->map[robot->y][robot->x + 1] != 'B' && arena->map[robot->y][robot->x + 1] != 'O');
     }
     else if (robot->direction == 'S')
     {
-        return (arenaMap[robot->y + 1][robot->x] != 'B' && arenaMap[robot->y + 1][robot->x] != 'O');
+        return (arena->map[robot->y + 1][robot->x] != 'B' && arena->map[robot->y + 1][robot->x] != 'O');
     }
     else if (robot->direction == 'W')
     {
-        return (arenaMap[robot->y][robot->x - 1] != 'B' && arenaMap[robot->y][robot->x - 1] != 'O');
+        return (arena->map[robot->y][robot->x - 1] != 'B' && arena->map[robot->y][robot->x - 1] != 'O');
     }
     return 0;
 }
 
-int robotAtMarker(Robot *robot)
+int robotAtMarker(Arena *arena, Robot *robot)
 {
-    return (arenaMap[robot->y][robot->x] == 'X');
+    return (arena->map[robot->y][robot->x] == 'X');
 }
 
-void robotDropMarker(Robot *robot)
+void robotDropMarker(Arena *arena, Robot *robot)
 {
-    if (arenaMap[robot->y][robot->x] == 'R')
+    if (arena->map[robot->y][robot->x] == 'R')
     {
-        arenaMap[robot->y][robot->x] = 'X';
+        arena->map[robot->y][robot->x] = 'X';
         robot->markers--;
     }
     return;
 }
 
-void robotPickUpMarker(Robot *robot)
+void robotPickUpMarker(Arena *arena, Robot *robot)
 {
-    if (arenaMap[robot->y][robot->x] == 'X')
+    if (arena->map[robot->y][robot->x] == 'X')
     {
-        arenaMap[robot->y][robot->x] = 'R';
+        arena->map[robot->y][robot->x] = 'R';
         robot->markers++;
     }
     return;
 }
 
-int main()
+/*
+main function Expecting:
+1. Robot initial position: E, W, S, N
+2. The size of the map, including the thickness of the border: (width, height)
+  - User is responsible for ensuring that the robot is not placed by the wall
+3. Robot initial position: (x, y)
+*/
+int main(int argc, char const **argv)
 {
-    initMap();
-    Robot *robot = initRobot();
+    Arena *arena = initArena(argc, argv);
+    Robot *robot = initRobot(arena);
     Agent *agent = initAgent();
-    updateMap(robot);
-    initView(arenaMap, robot);
+    updateMap(arena, robot);
+    initView(arena, robot);
     while (1)
     {
         operateRobot(robot, agent);
-        updateMap(robot);
+        updateMap(arena, robot);
+        drawMap(arena);
         drawMovingRobot(robot);
     }
     return 0;

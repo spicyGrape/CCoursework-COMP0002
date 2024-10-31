@@ -1,24 +1,25 @@
 #include "Robot.h"
 #include <stdlib.h>
 
-Robot *initRobot()
+Robot *initRobot(Arena *arena)
 {
     Robot *robot = (Robot *)malloc(sizeof(Robot));
     robot->x = START_X;
     robot->y = START_Y;
     robot->direction = 'N';
     robot->markers = 0;
+    robot->arena = arena;
     return robot;
 }
 
 void pickUpMarker(Robot *robot)
 {
-    robotPickUpMarker(robot);
+    robotPickUpMarker(robot->arena, robot);
 }
 
 void dropMarker(Robot *robot)
 {
-    robotDropMarker(robot);
+    robotDropMarker(robot->arena, robot);
 }
 
 int markerCount(Robot *robot)
@@ -28,12 +29,12 @@ int markerCount(Robot *robot)
 
 int atMarker(Robot *robot)
 {
-    return robotAtMarker(robot);
+    return robotAtMarker(robot->arena, robot);
 }
 
 int canMoveForward(Robot *robot)
 {
-    return robotCanMoveForward(robot);
+    return robotCanMoveForward(robot->arena, robot);
 }
 
 void forward(Robot *robot)

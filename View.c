@@ -1,7 +1,7 @@
 #include "View.h"
 
 // Prviate functions
-void drawGrid();
+void drawGrid(Arena *arena);
 
 void updateRobotVertices(Robot *robot)
 {
@@ -43,34 +43,34 @@ void updateRobotVertices(Robot *robot)
     }
 }
 
-void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
+void drawMap(Arena *arena)
 {
     background();
     clear();
     // Draw the grid first so that the tiles can be drawn on top of it
-    drawGrid();
+    drawGrid(arena);
 
-    // Check each tile in the arenaMap
-    for (int height = 0; height < ARENA_HEIGHT; height++)
+    // Check each tile in the arena map
+    for (int height = 0; height < arena->height; height++)
     {
-        for (int width = 0; width < ARENA_WIDTH; width++)
+        for (int width = 0; width < arena->width; width++)
         {
             // If the tile is a border tile, draw it in red
-            if (arenaMap[height][width] == 'B')
+            if (arena->map[height][width] == 'B')
             {
                 setColour(red);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
             }
 
             // If the tile is a marker tile, draw it in gray
-            else if (arenaMap[height][width] == 'M' || arenaMap[height][width] == 'X')
+            else if (arena->map[height][width] == 'M' || arena->map[height][width] == 'X')
             {
                 setColour(gray);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
             }
 
             // If the tile is an obstacle tile, draw it in black
-            else if (arenaMap[height][width] == 'O')
+            else if (arena->map[height][width] == 'O')
             {
                 setColour(black);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
@@ -80,33 +80,33 @@ void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
     return;
 }
 
-void drawGrid()
+void drawGrid(Arena *arena)
 {
     background();
     setColour(gray);
     // Vertical lines
-    for (int i = 0; i < ARENA_HEIGHT; i++)
+    for (int i = 0; i < arena->height; i++)
     {
-        drawLine(0, i * TILE_WIDTH, ARENA_WIDTH * TILE_WIDTH, i * TILE_WIDTH);
+        drawLine(0, i * TILE_WIDTH, arena->width * TILE_WIDTH, i * TILE_WIDTH);
     }
     // Horizontal lines
-    for (int i = 0; i < ARENA_WIDTH; i++)
+    for (int i = 0; i < arena->width; i++)
     {
-        drawLine(i * TILE_WIDTH, 0, i * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+        drawLine(i * TILE_WIDTH, 0, i * TILE_WIDTH, arena->height * TILE_WIDTH);
     }
     return;
 }
 
-void initWindow()
+void initWindow(Arena *arena)
 {
-    setWindowSize(ARENA_WIDTH * TILE_WIDTH, ARENA_HEIGHT * TILE_WIDTH);
+    setWindowSize(arena->width * TILE_WIDTH, arena->height * TILE_WIDTH);
     return;
 }
 
-void initView(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH], Robot *robot)
+void initView(Arena *arena, Robot *robot)
 {
-    initWindow();
-    drawMap(arenaMap);
+    initWindow(arena);
+    drawMap(arena);
     updateRobotVertices(robot);
     drawRobot(robot);
     return;
