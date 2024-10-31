@@ -47,6 +47,9 @@ void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
 {
     background();
     clear();
+    // Draw the grid first so that the tiles can be drawn on top of it
+    drawGrid();
+
     // Check each tile in the arenaMap
     for (int height = 0; height < ARENA_HEIGHT; height++)
     {
@@ -74,7 +77,6 @@ void drawMap(char arenaMap[ARENA_HEIGHT][ARENA_WIDTH])
             }
         }
     }
-    drawGrid();
     return;
 }
 
