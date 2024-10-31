@@ -43,7 +43,18 @@ void operateRobot(Robot *robot, Agent *agent)
         agent->curPosition.x += dVec.x;
         agent->curPosition.y += dVec.y;
         forward(robot);
-        agent->stepCount++;
+
+        // If the agent is going back, decrement the step count
+        // Otherwise, increment the step count
+        if (agent->goingBack)
+        {
+            agent->stepCount--;
+            agent->goingBack = 0;
+        }
+        else
+        {
+            agent->stepCount++;
+        }
         agent->timeStampMap[agent->curPosition.y][agent->curPosition.x] = agent->stepCount;
     }
     else
@@ -56,9 +67,10 @@ void operateRobot(Robot *robot, Agent *agent)
 
         // Best direction is backwards
         // But agent should only call one robot API at a time
-        // So just turn Right
+        // So just turn right and mark we are turning back
         case 2:
             agentRight(robot, agent);
+            agent->goingBack = 1;
             break;
         case 3:
             agentLeft(robot, agent);
@@ -70,8 +82,7 @@ void operateRobot(Robot *robot, Agent *agent)
 int lookAround(Robot *robot, Agent *agent)
 {
     Robot testerRobot = *robot;
-    int earliestStep = INT_MAX;
-    int bestDirection = 2;
+    int backDirection = 2;
     for (int i = 0; i < 4; i++)
     {
         DirectionVector dVec = getDirectionVector((agent->curDirection + i) % 4);
@@ -81,14 +92,22 @@ int lookAround(Robot *robot, Agent *agent)
         {
             *facingTileTimeStamp = INT_MAX;
         }
-        if (*facingTileTimeStamp < earliestStep)
+        // If the facing tile has not been visited
+        if (*facingTileTimeStamp == 0)
         {
-            earliestStep = *facingTileTimeStamp;
-            bestDirection = i;
+            return i;
+        }
+        // Mark the coming back direction
+        if (*facingTileTimeStamp == agent->stepCount - 1)
+        {
+            backDirection = i;
         }
         right(&testerRobot);
     }
-    return bestDirection;
+
+    // No unvisited tile, going back
+    agent->goingBack = 1;
+    return backDirection;
 }
 
 DirectionVector getDirectionVector(int direction)
@@ -144,6 +163,7 @@ Agent *initAgent()
         }
     }
     agent->stepCount = 0;
+    agent->goingBack = 0;
 
     return agent;
 }

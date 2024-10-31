@@ -17,6 +17,7 @@ typedef struct
     // Borders and obstacles are set to INT_MAX
     int timeStampMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
     int stepCount;
+    int goingBack;
 } Agent;
 
 Agent *initAgent();
