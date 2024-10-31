@@ -17,15 +17,12 @@ typedef struct
 
 // Private functions
 DirectionVector getDirectionVector(int direction);
-int lookAround(Robot *robot, Agent *agent);
+int findNextDirection(Robot *robot, Agent *agent);
 void agentLeft(Robot *robot, Agent *agent);
 void agentRight(Robot *robot, Agent *agent);
 
 void operateRobot(Robot *robot, Agent *agent)
 {
-    // debug only
-    // print current step count
-    printf("Step count: %d\n", agent->stepCount);
 
     if (atMarker(robot))
     {
@@ -34,104 +31,120 @@ void operateRobot(Robot *robot, Agent *agent)
 
     // Valid values: 0, 1, 2, 3
     // Representing how many right turns from the current direction
-    int bestDirection = lookAround(robot, agent);
+    int targetDirection = findNextDirection(robot, agent);
 
-    // If bestDirection is current direction, move forward
-    if (!bestDirection)
+    // If targetDirection is current direction, move forward
+    if (!targetDirection)
     {
-        DirectionVector dVec = getDirectionVector(agent->curDirection);
-        agent->curPosition.x += dVec.x;
-        agent->curPosition.y += dVec.y;
-        forward(robot);
-
-        // If the agent is going back, decrement the step count
-        // Otherwise, increment the step count
-        if (agent->goingBack)
-        {
-            agent->stepCount--;
-            agent->goingBack = 0;
-        }
-        else
-        {
-            agent->stepCount++;
-        }
-        agent->timeStampMap[agent->curPosition.y][agent->curPosition.x] = agent->stepCount;
+        agentForward(agent, robot);
     }
     else
     {
-        switch (bestDirection)
-        {
-        case 1:
-            agentRight(robot, agent);
-            break;
-
-        // Best direction is backwards
-        // But agent should only call one robot API at a time
-        // So just turn right and mark we are turning back
-        case 2:
-            agentRight(robot, agent);
-            agent->goingBack = 1;
-            break;
-        case 3:
-            agentLeft(robot, agent);
-            break;
-        }
+        rotateRobot(targetDirection, robot, agent);
     }
 }
 
-int lookAround(Robot *robot, Agent *agent)
+void agentForward(Agent *agent, Robot *robot)
+{
+    DirectionVector dVec = getDirectionVector(agent->curDirection);
+    agent->curPosition.x += dVec.x;
+    agent->curPosition.y += dVec.y;
+    forward(robot);
+
+    // If the agent is going back, decrement the search depth
+    // Otherwise, increment the step count
+    if (agent->tracingBack)
+    {
+        agent->searchDepth--;
+        agent->tracingBack = 0;
+    }
+    else
+    {
+        agent->searchDepth++;
+    }
+    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->searchDepth;
+}
+
+void rotateRobot(int targetDirection, Robot *robot, Agent *agent)
+{
+    switch (targetDirection)
+    {
+    case 1:
+        agentRight(robot, agent);
+        break;
+
+    // Best direction is backwards
+    // But agent should only call one robot API at a time
+    // So just turn right. Turn right again in the iteration
+    case 2:
+        agentRight(robot, agent);
+        break;
+    case 3:
+        agentLeft(robot, agent);
+        break;
+    }
+}
+
+int findNextDirection(Robot *robot, Agent *agent)
 {
     Robot testerRobot = *robot;
     int backDirection = 2;
     for (int i = 0; i < 4; i++)
     {
         DirectionVector dVec = getDirectionVector((agent->curDirection + i) % 4);
-        int *facingTileTimeStamp;
-        facingTileTimeStamp = &(agent->timeStampMap[agent->curPosition.y + dVec.y][agent->curPosition.x + dVec.x]);
+        int *facingTileSearchDepth;
+
+        // Get the search depth of the facing tile from the agent's map
+        facingTileSearchDepth = &(agent->searchDepthMap[agent->curPosition.y + dVec.y][agent->curPosition.x + dVec.x]);
+
         if (!(canMoveForward(&testerRobot)))
         {
-            *facingTileTimeStamp = INT_MAX;
+            *facingTileSearchDepth = INT_MAX;
         }
+
         // If the facing tile has not been visited
-        if (*facingTileTimeStamp == 0)
+        if (!*facingTileSearchDepth)
         {
             return i;
         }
-        // Mark the coming back direction
-        if (*facingTileTimeStamp == agent->stepCount - 1)
+
+        // Mark the back direction
+        if (*facingTileSearchDepth == agent->searchDepth - 1)
         {
             backDirection = i;
         }
         right(&testerRobot);
     }
 
-    // No unvisited tile, going back
-    agent->goingBack = 1;
+    // No unvisited tile, trace back
+    agent->tracingBack = 1;
     return backDirection;
 }
 
 DirectionVector getDirectionVector(int direction)
 {
     DirectionVector directionVector;
-    if (direction == 0)
+    switch (direction)
     {
+    case 0:
         directionVector.x = 0;
         directionVector.y = -1;
-    }
-    else if (direction == 1)
-    {
+        break;
+    case 1:
         directionVector.x = 1;
         directionVector.y = 0;
-    }
-    else if (direction == 2)
-    {
+        break;
+    case 2:
         directionVector.x = 0;
         directionVector.y = 1;
-    }
-    else if (direction == 3)
-    {
+        break;
+    case 3:
         directionVector.x = -1;
         directionVector.y = 0;
+        break;
+    default:
+        // Should never reach here
+        break;
     }
     return directionVector;
 }
@@ -153,17 +166,20 @@ Agent *initAgent()
     Agent *agent = (Agent *)malloc(sizeof(Agent));
     agent->curPosition.x = MEMORY_MAP_SIZE / 2;
     agent->curPosition.y = MEMORY_MAP_SIZE / 2;
+    agent->curDirection = 0;
 
     // Initialize the timeStampsMap
     for (int i = 0; i < MEMORY_MAP_SIZE; i++)
     {
         for (int j = 0; j < MEMORY_MAP_SIZE; j++)
         {
-            agent->timeStampMap[i][j] = 0;
+            agent->searchDepthMap[i][j] = 0;
         }
     }
-    agent->stepCount = 0;
-    agent->goingBack = 0;
+
+    agent->searchDepth = 1;
+    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->searchDepth;
+    agent->tracingBack = 0;
 
     return agent;
 }

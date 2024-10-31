@@ -11,15 +11,17 @@ typedef struct
     // Representing how many right turns from the initial direction
     int curDirection;
 
-    // timeStampMap[HEIGHT][WIDTH]
-    // All tiles are initially set to 0.
-    // Recording the time stamp of the last visit
+    // searchDepthMap[HEIGHT][WIDTH]
+    // All tiles are initially set to 0
+    // 0 represents unexplored tiles
     // Borders and obstacles are set to INT_MAX
-    int timeStampMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
-    int stepCount;
-    int goingBack;
+    int searchDepthMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
+    int searchDepth;
+    int tracingBack;
 } Agent;
 
 Agent *initAgent();
 void operateRobot(Robot *robot, Agent *agent);
+void agentForward(Agent *agent, Robot *robot);
+void rotateRobot(int targetDirection, Robot *robot, Agent *agent);
 #endif
