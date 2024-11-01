@@ -35,7 +35,7 @@ void initBorder(Arena *arena)
 void initMarkers(Arena *arena)
 {
     // Set tiles with a marker to 'M'
-    for (int i = 1; i < DEFAULT_ARENA_HEIGHT - 1; i++)
+    for (int i = 1; i < arena->height - 1; i++)
     {
         for (int j = 1; j < arena->width - 1; j++)
         {
@@ -56,7 +56,7 @@ void initObstacles(Arena *arena)
     {
         for (int j = 0; j < arena->width; j++)
         {
-            if (arena->map[i][j] != 'B')
+            if (arena->map[i][j] != 'B' && arena->map[i][j] != 'R')
             {
                 if (rand() % 100 < 10)
                 {
@@ -86,7 +86,7 @@ Arena *initArena(int argc, char const **argv)
     Arena *arena = (Arena *)malloc(sizeof(Arena));
     if (argc >= 2)
     {
-        sscanf(argv[1], "(%d,%d)", &arena->width, &arena->height);
+        sscanf(argv[1], "(%d,%d)", &arena->height, &arena->width);
     }
     else
     {
@@ -178,15 +178,15 @@ void robotPickUpMarker(Arena *arena, Robot *robot)
 
 /*
 main function Expecting:
-1. Robot initial position: E, W, S, N
-2. The size of the map, including the thickness of the border: (width, height)
+1. The size of the map, including the thickness of the border: '(width, height)'
   - User is responsible for ensuring that the robot is not placed by the wall
-3. Robot initial position: (x, y)
+2. Robot initial position: E, W, S, N
+3. Robot initial position: '(y, x)'
 */
 int main(int argc, char const **argv)
 {
     Arena *arena = initArena(argc, argv);
-    Robot *robot = initRobot(arena);
+    Robot *robot = initRobot(argc, argv, arena);
     Agent *agent = initAgent();
     updateMap(arena, robot);
     initView(arena, robot);

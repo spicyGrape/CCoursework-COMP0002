@@ -32,7 +32,8 @@ typedef struct robot
     Arena *arena;
 } Robot;
 
-Robot *initRobot(Arena *arena);
+#include <stdio.h>
+Robot *initRobot(int argc, char const **argv, Arena *arena);
 
 // Required API for the robot
 void forward(Robot *robot);
@@ -44,7 +45,8 @@ void pickUpMarker(Robot *robot);
 void dropMarker(Robot *robot);
 int markerCount(Robot *robot);
 
-#define START_X 4
-#define START_Y 4
+#define DEFAULT_START_X 4
+#define DEFAULT_START_Y 4
+#define DEFAULT_START_DIRECTION 'N'
 
 #endif

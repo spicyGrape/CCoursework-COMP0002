@@ -1,12 +1,26 @@
 #include "Robot.h"
 #include <stdlib.h>
 
-Robot *initRobot(Arena *arena)
+Robot *initRobot(int argc, char const **argv, Arena *arena)
 {
     Robot *robot = (Robot *)malloc(sizeof(Robot));
-    robot->x = START_X;
-    robot->y = START_Y;
-    robot->direction = 'N';
+    if (argc >= 3)
+    {
+        robot->direction = argv[2][0];
+    }
+    else
+    {
+        robot->direction = DEFAULT_START_DIRECTION;
+    }
+    if (argc >= 4)
+    {
+        sscanf(argv[3], "(%d,%d)", &robot->y, &robot->x);
+    }
+    else
+    {
+        robot->x = DEFAULT_START_X;
+        robot->y = DEFAULT_START_Y;
+    }
     robot->markers = 0;
     robot->arena = arena;
     return robot;
