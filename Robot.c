@@ -33,7 +33,11 @@ void pickUpMarker(Robot *robot)
 
 void dropMarker(Robot *robot)
 {
-    robotDropMarker(robot->arena, robot);
+    if (robot->markers > 0)
+    {
+        robot->markers--;
+        robotDropMarker(robot->arena, robot);
+    }
 }
 
 int markerCount(Robot *robot)

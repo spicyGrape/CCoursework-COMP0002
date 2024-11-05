@@ -2,6 +2,8 @@
 
 // Prviate functions
 void drawGrid(Arena *arena);
+void updateRobotCentre(Robot *robot);
+void drawMarkerNumber(Robot *robot);
 
 void updateRobotVertices(Robot *robot)
 {
@@ -41,6 +43,7 @@ void updateRobotVertices(Robot *robot)
         robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
         robot->right.y = robot->y * TILE_WIDTH;
     }
+    updateRobotCentre(robot);
 }
 
 void drawMap(Arena *arena)
@@ -112,6 +115,12 @@ void initView(Arena *arena, Robot *robot)
     return;
 }
 
+void updateRobotCentre(Robot *robot)
+{
+    robot->centre.x = robot->left.x == robot->right.x ? (robot->left.x + robot->apex.x) / 2 : robot->apex.x;
+    robot->centre.y = robot->left.y == robot->right.y ? (robot->left.y + robot->apex.y) / 2 : robot->apex.y;
+}
+
 void drawRobot(Robot *robot)
 {
     foreground();
@@ -120,6 +129,18 @@ void drawRobot(Robot *robot)
     int x[] = {robot->apex.x, robot->left.x, robot->right.x};
     int y[] = {robot->apex.y, robot->left.y, robot->right.y};
     fillPolygon(3, x, y);
+
+    drawMarkerNumber(robot);
+}
+
+void drawMarkerNumber(Robot *robot)
+{
+    // Don't expect markers to exceed 9999
+    char numMarkers[5];
+    sprintf(numMarkers, "%d", robot->markers);
+    setColour(black);
+    // Draw the number of markers in the middle of the robot
+    drawString(numMarkers, robot->centre.x, robot->centre.y);
 }
 
 void drawMovingRobot(Robot *robot)
@@ -140,6 +161,7 @@ void drawMovingRobot(Robot *robot)
             robot->left.y += yStep;
             robot->right.x += xStep;
             robot->right.y += yStep;
+            updateRobotCentre(robot);
             drawRobot(robot);
             sleep(FRAME_TIME);
         }

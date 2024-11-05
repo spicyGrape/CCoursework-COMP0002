@@ -176,7 +176,6 @@ void robotDropMarker(Arena *arena, Robot *robot)
     if (arena->map[robot->y][robot->x] == 'R')
     {
         arena->map[robot->y][robot->x] = 'X';
-        robot->markers--;
     }
     return;
 }

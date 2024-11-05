@@ -24,9 +24,11 @@ typedef struct robot
     char direction;
 
     // Managing the robot's position on screen
+    // For View.c only
     Point apex;
     Point left;
     Point right;
+    Point centre;
 
     // Arena the robot is in
     Arena *arena;
