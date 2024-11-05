@@ -17,5 +17,7 @@ typedef struct arena
 } Arena;
 
 typedef struct robot Robot;
+
+// Interface
 Arena *initArena(int argc, char const **argv);
 #endif

@@ -12,15 +12,16 @@ typedef struct
     int curDirection;
 
     // searchDepthMap[HEIGHT][WIDTH]
-    // All tiles are initially set to 0
-    // 0 represents unexplored tiles
-    // Borders and obstacles are set to INT_MAX
+    // Initialized to 0, representing unexplored
+    // INT_MAX representing unreachable
     int searchDepthMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
-    int searchDepth;
+    int currentSearchDepth;
     int tracingBack;
+
     int foundHome;
 } Agent;
 
+// Interface
 Agent *initAgent();
 void operateRobot(Robot *robot, Agent *agent);
 #endif

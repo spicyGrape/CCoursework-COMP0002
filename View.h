@@ -6,6 +6,8 @@
 #define FRAME_TIME 5
 typedef struct robot Robot;
 typedef struct arena Arena;
+
+// Interface
 void initView(Arena *arena, Robot *robot);
 void drawMap(Arena *arena);
 void drawMovingRobot(Robot *robot);

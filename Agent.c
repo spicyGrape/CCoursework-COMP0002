@@ -78,14 +78,14 @@ void agentForward(Agent *agent, Robot *robot)
     // Otherwise, increment the step count
     if (agent->tracingBack)
     {
-        agent->searchDepth--;
+        agent->currentSearchDepth--;
         agent->tracingBack = 0;
     }
     else
     {
-        agent->searchDepth++;
+        agent->currentSearchDepth++;
     }
-    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->searchDepth;
+    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->currentSearchDepth;
 }
 
 void rotateRobot(int targetDirection, Robot *robot, Agent *agent)
@@ -135,7 +135,7 @@ int findNextDirection(Robot *robot, Agent *agent)
         }
 
         // Mark the back direction
-        if (*facingTileSearchDepth == agent->searchDepth - 1)
+        if (*facingTileSearchDepth == agent->currentSearchDepth - 1)
         {
             backDirection = i;
         }
@@ -211,7 +211,7 @@ void resetSearchMap(Agent *agent)
         }
     }
 
-    agent->searchDepth = 1;
-    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->searchDepth;
+    agent->currentSearchDepth = 1;
+    agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->currentSearchDepth;
     agent->tracingBack = 0;
 }

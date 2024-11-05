@@ -7,41 +7,44 @@ void drawMarkerNumber(Robot *robot);
 
 void updateRobotVertices(Robot *robot)
 {
-    if (robot->direction == 'N')
+    int baseX = robot->x * TILE_WIDTH;
+    int baseY = robot->y * TILE_WIDTH;
+    int halfTile = TILE_WIDTH / 2;
+
+    switch (robot->direction)
     {
-        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
-        robot->apex.y = robot->y * TILE_WIDTH;
-        robot->left.x = robot->x * TILE_WIDTH;
-        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
-        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
-        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
-    }
-    else if (robot->direction == 'S')
-    {
-        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH / 2;
-        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH;
-        robot->left.x = robot->x * TILE_WIDTH;
-        robot->left.y = robot->y * TILE_WIDTH;
-        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
-        robot->right.y = robot->y * TILE_WIDTH;
-    }
-    else if (robot->direction == 'E')
-    {
-        robot->apex.x = robot->x * TILE_WIDTH + TILE_WIDTH;
-        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
-        robot->left.x = robot->x * TILE_WIDTH;
-        robot->left.y = robot->y * TILE_WIDTH;
-        robot->right.x = robot->x * TILE_WIDTH;
-        robot->right.y = robot->y * TILE_WIDTH + TILE_WIDTH;
-    }
-    else if (robot->direction == 'W')
-    {
-        robot->apex.x = robot->x * TILE_WIDTH;
-        robot->apex.y = robot->y * TILE_WIDTH + TILE_WIDTH / 2;
-        robot->left.x = robot->x * TILE_WIDTH + TILE_WIDTH;
-        robot->left.y = robot->y * TILE_WIDTH + TILE_WIDTH;
-        robot->right.x = robot->x * TILE_WIDTH + TILE_WIDTH;
-        robot->right.y = robot->y * TILE_WIDTH;
+    case 'N':
+        robot->apex.x = baseX + halfTile;
+        robot->apex.y = baseY;
+        robot->left.x = baseX;
+        robot->left.y = baseY + TILE_WIDTH;
+        robot->right.x = baseX + TILE_WIDTH;
+        robot->right.y = baseY + TILE_WIDTH;
+        break;
+    case 'S':
+        robot->apex.x = baseX + halfTile;
+        robot->apex.y = baseY + TILE_WIDTH;
+        robot->left.x = baseX;
+        robot->left.y = baseY;
+        robot->right.x = baseX + TILE_WIDTH;
+        robot->right.y = baseY;
+        break;
+    case 'E':
+        robot->apex.x = baseX + TILE_WIDTH;
+        robot->apex.y = baseY + halfTile;
+        robot->left.x = baseX;
+        robot->left.y = baseY;
+        robot->right.x = baseX;
+        robot->right.y = baseY + TILE_WIDTH;
+        break;
+    case 'W':
+        robot->apex.x = baseX;
+        robot->apex.y = baseY + halfTile;
+        robot->left.x = baseX + TILE_WIDTH;
+        robot->left.y = baseY + TILE_WIDTH;
+        robot->right.x = baseX + TILE_WIDTH;
+        robot->right.y = baseY;
+        break;
     }
     updateRobotCentre(robot);
 }
@@ -50,29 +53,28 @@ void drawMap(Arena *arena)
 {
     background();
     clear();
-    // Draw the grid first so that the tiles can be drawn on top of it
+
     drawGrid(arena);
 
-    // Check each tile in the arena map
     for (int height = 0; height < arena->height; height++)
     {
         for (int width = 0; width < arena->width; width++)
         {
-            // If the tile is a border tile, draw it in red
+            // Border in red
             if (arena->map[height][width] == 'B')
             {
                 setColour(red);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
             }
 
-            // If the tile is a marker tile, draw it in gray
+            // Markers in gray
             else if (arena->map[height][width] == 'M' || arena->map[height][width] == 'X')
             {
                 setColour(gray);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
             }
 
-            // If the tile is an obstacle tile, draw it in black
+            // Obstacles in black
             else if (arena->map[height][width] == 'O')
             {
                 setColour(black);
@@ -87,16 +89,15 @@ void drawGrid(Arena *arena)
 {
     background();
     setColour(gray);
+
     // Vertical lines
     for (int i = 0; i < arena->height; i++)
-    {
         drawLine(0, i * TILE_WIDTH, arena->width * TILE_WIDTH, i * TILE_WIDTH);
-    }
+
     // Horizontal lines
     for (int i = 0; i < arena->width; i++)
-    {
         drawLine(i * TILE_WIDTH, 0, i * TILE_WIDTH, arena->height * TILE_WIDTH);
-    }
+
     return;
 }
 
@@ -117,8 +118,23 @@ void initView(Arena *arena, Robot *robot)
 
 void updateRobotCentre(Robot *robot)
 {
-    robot->centre.x = robot->left.x == robot->right.x ? (robot->left.x + robot->apex.x) / 2 : robot->apex.x;
-    robot->centre.y = robot->left.y == robot->right.y ? (robot->left.y + robot->apex.y) / 2 : robot->apex.y;
+    if (robot->left.x == robot->right.x) // Bottom edge vertical
+    {
+        robot->centre.x = (robot->left.x + robot->apex.x) / 2;
+    }
+    else // Bottom edge horizontal
+    {
+        robot->centre.x = robot->apex.x;
+    }
+
+    if (robot->left.y == robot->right.y) // Bottom edge horizontal
+    {
+        robot->centre.y = (robot->left.y + robot->apex.y) / 2;
+    }
+    else // Bottom edge vertical
+    {
+        robot->centre.y = robot->apex.y;
+    }
 }
 
 void drawRobot(Robot *robot)
@@ -135,23 +151,23 @@ void drawRobot(Robot *robot)
 
 void drawMarkerNumber(Robot *robot)
 {
-    // Don't expect markers to exceed 9999
-    char numMarkers[5];
+    // Assuming number of markers less than 7 digits
+    char numMarkers[8];
     sprintf(numMarkers, "%d", robot->markers);
+
     setColour(black);
-    // Draw the number of markers in the middle of the robot
     drawString(numMarkers, robot->centre.x, robot->centre.y);
 }
 
 void drawMovingRobot(Robot *robot)
 {
-    // Create a previous robot to preview the movement
+    // Create a copy of robot to preview the movement
     Robot prevrobot = *robot;
     updateRobotVertices(&prevrobot);
 
-    int xStep = (prevrobot.apex.x - robot->apex.x) / TILE_WIDTH;
-    int yStep = (prevrobot.apex.y - robot->apex.y) / TILE_WIDTH;
-    if (xStep || yStep)
+    int xStep = (prevrobot.centre.x - robot->centre.x) / TILE_WIDTH;
+    int yStep = (prevrobot.centre.y - robot->centre.y) / TILE_WIDTH;
+    if (xStep || yStep) // Translation
     {
         for (int i = 0; i < TILE_WIDTH; i++)
         {
@@ -167,7 +183,7 @@ void drawMovingRobot(Robot *robot)
         }
         updateRobotVertices(robot);
     }
-    else
+    else // Rotation
     {
         updateRobotVertices(robot);
         sleep(FRAME_TIME * TILE_WIDTH / 2);

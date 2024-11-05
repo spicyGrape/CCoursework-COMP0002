@@ -11,16 +11,16 @@ typedef struct
 typedef struct arena Arena;
 typedef struct robot
 {
-    // x is along the dierction of width
+    // x is along the dierction of width, 0 on left
     int x;
 
     // y is height
-    // y is inverted
+    // y is inverted, 0 on top
     int y;
 
     int markers;
 
-    // N, E, S, W
+    // N, E, S, W for up, right, down, left
     char direction;
 
     // Managing the robot's position on screen
