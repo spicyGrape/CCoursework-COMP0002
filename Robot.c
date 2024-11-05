@@ -14,7 +14,7 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
     }
     if (argc >= 4)
     {
-        sscanf(argv[3], "(%d,%d)", &robot->y, &robot->x);
+        sscanf(argv[3], "(%d,%d)", &robot->x, &robot->y);
     }
     else
     {
@@ -112,4 +112,9 @@ void right(Robot *robot)
         robot->direction = 'N';
     }
     return;
+}
+
+int isAtHome(Robot *robot)
+{
+    return robotIsAtHome(robot->arena, robot);
 }

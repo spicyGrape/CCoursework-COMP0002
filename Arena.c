@@ -86,13 +86,23 @@ Arena *initArena(int argc, char const **argv)
     Arena *arena = (Arena *)malloc(sizeof(Arena));
     if (argc >= 2)
     {
-        sscanf(argv[1], "(%d,%d)", &arena->height, &arena->width);
+        sscanf(argv[1], "(%d,%d)", &arena->width, &arena->height);
     }
     else
     {
         arena->width = DEFAULT_ARENA_WIDTH;
         arena->height = DEFAULT_ARENA_HEIGHT;
     }
+    if (argc >= 5)
+    {
+        sscanf(argv[4], "(%d,%d)", &arena->robotHomeX, &arena->robotHomeY);
+    }
+    else
+    {
+        arena->robotHomeX = DEFAULT_ROBOT_HOME_X;
+        arena->robotHomeY = DEFAULT_ROBOT_HOME_Y;
+    }
+
     arena->map = initMap(arena);
     // Set all tiles to ' ', representing empty tiles
     initBorder(arena);
@@ -156,6 +166,11 @@ int robotAtMarker(Arena *arena, Robot *robot)
     return (arena->map[robot->y][robot->x] == 'X');
 }
 
+int robotIsAtHome(Arena *arena, Robot *robot)
+{
+    return (robot->x == arena->robotHomeX && robot->y == arena->robotHomeY);
+}
+
 void robotDropMarker(Arena *arena, Robot *robot)
 {
     if (arena->map[robot->y][robot->x] == 'R')
@@ -181,7 +196,8 @@ main function Expecting:
 1. The size of the map, including the thickness of the border: '(width, height)'
   - User is responsible for ensuring that the robot is not placed by the wall
 2. Robot initial position: E, W, S, N
-3. Robot initial position: '(y, x)'
+3. Robot initial position: '(x, y)'
+4. Robot home position: '(x, y)'
 */
 int main(int argc, char const **argv)
 {

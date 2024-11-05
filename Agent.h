@@ -18,10 +18,9 @@ typedef struct
     int searchDepthMap[MEMORY_MAP_SIZE][MEMORY_MAP_SIZE];
     int searchDepth;
     int tracingBack;
+    int foundHome;
 } Agent;
 
 Agent *initAgent();
 void operateRobot(Robot *robot, Agent *agent);
-void agentForward(Agent *agent, Robot *robot);
-void rotateRobot(int targetDirection, Robot *robot, Agent *agent);
 #endif

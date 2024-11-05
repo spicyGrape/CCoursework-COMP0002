@@ -20,14 +20,16 @@ DirectionVector getDirectionVector(int direction);
 int findNextDirection(Robot *robot, Agent *agent);
 void agentLeft(Robot *robot, Agent *agent);
 void agentRight(Robot *robot, Agent *agent);
+void agentForward(Agent *agent, Robot *robot);
+void rotateRobot(int targetDirection, Robot *robot, Agent *agent);
+void resetSearchMap(Agent *agent);
+void checkRobotAtHome(Robot *robot, Agent *agent);
+void checkRobotAtMarker(Robot *robot);
 
 void operateRobot(Robot *robot, Agent *agent)
 {
-
-    if (atMarker(robot))
-    {
-        pickUpMarker(robot);
-    }
+    checkRobotAtHome(robot, agent);
+    checkRobotAtMarker(robot);
 
     // Valid values: 0, 1, 2, 3
     // Representing how many right turns from the current direction
@@ -35,12 +37,33 @@ void operateRobot(Robot *robot, Agent *agent)
 
     // If targetDirection is current direction, move forward
     if (!targetDirection)
-    {
         agentForward(agent, robot);
-    }
     else
-    {
         rotateRobot(targetDirection, robot, agent);
+}
+
+void checkRobotAtMarker(Robot *robot)
+{
+    if (atMarker(robot))
+    {
+        if (!isAtHome(robot))
+            pickUpMarker(robot);
+    }
+}
+
+void checkRobotAtHome(Robot *robot, Agent *agent)
+{
+    if (isAtHome(robot))
+    {
+        if (!agent->foundHome)
+        {
+            agent->foundHome = 1;
+
+            // reset the search map
+            // so that the home becomes the root of the search tree
+            resetSearchMap(agent);
+        }
+        dropMarker(robot);
     }
 }
 
@@ -87,6 +110,9 @@ void rotateRobot(int targetDirection, Robot *robot, Agent *agent)
 
 int findNextDirection(Robot *robot, Agent *agent)
 {
+    // An instance of DFS
+    // Trace back by count back from the current search depth
+
     Robot testerRobot = *robot;
     int backDirection = 2;
     for (int i = 0; i < 4; i++)
@@ -167,8 +193,16 @@ Agent *initAgent()
     agent->curPosition.x = MEMORY_MAP_SIZE / 2;
     agent->curPosition.y = MEMORY_MAP_SIZE / 2;
     agent->curDirection = 0;
+    agent->foundHome = 0;
 
-    // Initialize the timeStampsMap
+    // Initialize the Search Depth Map
+    resetSearchMap(agent);
+
+    return agent;
+}
+
+void resetSearchMap(Agent *agent)
+{
     for (int i = 0; i < MEMORY_MAP_SIZE; i++)
     {
         for (int j = 0; j < MEMORY_MAP_SIZE; j++)
@@ -180,6 +214,4 @@ Agent *initAgent()
     agent->searchDepth = 1;
     agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->searchDepth;
     agent->tracingBack = 0;
-
-    return agent;
 }

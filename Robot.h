@@ -44,6 +44,7 @@ int canMoveForward(Robot *robot);
 void pickUpMarker(Robot *robot);
 void dropMarker(Robot *robot);
 int markerCount(Robot *robot);
+int isAtHome(Robot *robot);
 
 #define DEFAULT_START_X 4
 #define DEFAULT_START_Y 4
