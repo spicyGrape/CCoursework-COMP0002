@@ -17,9 +17,5 @@ typedef struct arena
 } Arena;
 
 typedef struct robot Robot;
-int robotCanMoveForward(Arena *arena, Robot *robot);
-int robotAtMarker(Arena *arena, Robot *robot);
-void robotDropMarker(Arena *arena, Robot *robot);
-void robotPickUpMarker(Arena *arena, Robot *robot);
-int robotIsAtHome(Arena *arena, Robot *robot);
+Arena *initArena(int argc, char const **argv);
 #endif

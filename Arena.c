@@ -5,8 +5,15 @@
 #include <string.h>
 #include <stdio.h>
 
-// debug only
+// For random obstacle generation
 #include <time.h>
+
+// Private functions
+void initBorder(Arena *arena);
+void initMarkers(Arena *arena);
+void initObstacles(Arena *arena);
+char **initMap(Arena *arena);
+void updateMap(Arena *arena, Robot *robot);
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
@@ -138,56 +145,6 @@ void updateMap(Arena *arena, Robot *robot)
             }
         }
     }
-}
-
-int robotCanMoveForward(Arena *arena, Robot *robot)
-{
-    if (robot->direction == 'N')
-    {
-        return (arena->map[robot->y - 1][robot->x] != 'B' && arena->map[robot->y - 1][robot->x] != 'O');
-    }
-    else if (robot->direction == 'E')
-    {
-        return (arena->map[robot->y][robot->x + 1] != 'B' && arena->map[robot->y][robot->x + 1] != 'O');
-    }
-    else if (robot->direction == 'S')
-    {
-        return (arena->map[robot->y + 1][robot->x] != 'B' && arena->map[robot->y + 1][robot->x] != 'O');
-    }
-    else if (robot->direction == 'W')
-    {
-        return (arena->map[robot->y][robot->x - 1] != 'B' && arena->map[robot->y][robot->x - 1] != 'O');
-    }
-    return 0;
-}
-
-int robotAtMarker(Arena *arena, Robot *robot)
-{
-    return (arena->map[robot->y][robot->x] == 'X');
-}
-
-int robotIsAtHome(Arena *arena, Robot *robot)
-{
-    return (robot->x == arena->robotHomeX && robot->y == arena->robotHomeY);
-}
-
-void robotDropMarker(Arena *arena, Robot *robot)
-{
-    if (arena->map[robot->y][robot->x] == 'R')
-    {
-        arena->map[robot->y][robot->x] = 'X';
-    }
-    return;
-}
-
-void robotPickUpMarker(Arena *arena, Robot *robot)
-{
-    if (arena->map[robot->y][robot->x] == 'X')
-    {
-        arena->map[robot->y][robot->x] = 'R';
-        robot->markers++;
-    }
-    return;
 }
 
 /*

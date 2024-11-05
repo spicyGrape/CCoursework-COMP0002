@@ -28,7 +28,12 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
 
 void pickUpMarker(Robot *robot)
 {
-    robotPickUpMarker(robot->arena, robot);
+    if (robot->arena->map[robot->y][robot->x] == 'X')
+    {
+        robot->arena->map[robot->y][robot->x] = 'R';
+        robot->markers++;
+    }
+    return;
 }
 
 void dropMarker(Robot *robot)
@@ -36,8 +41,12 @@ void dropMarker(Robot *robot)
     if (robot->markers > 0)
     {
         robot->markers--;
-        robotDropMarker(robot->arena, robot);
+        if (robot->arena->map[robot->y][robot->x] == 'R')
+        {
+            robot->arena->map[robot->y][robot->x] = 'X';
+        }
     }
+    return;
 }
 
 int markerCount(Robot *robot)
@@ -47,12 +56,28 @@ int markerCount(Robot *robot)
 
 int atMarker(Robot *robot)
 {
-    return robotAtMarker(robot->arena, robot);
+    return (robot->arena->map[robot->y][robot->x] == 'X');
 }
 
 int canMoveForward(Robot *robot)
 {
-    return robotCanMoveForward(robot->arena, robot);
+    if (robot->direction == 'N')
+    {
+        return (robot->arena->map[robot->y - 1][robot->x] != 'B' && robot->arena->map[robot->y - 1][robot->x] != 'O');
+    }
+    else if (robot->direction == 'E')
+    {
+        return (robot->arena->map[robot->y][robot->x + 1] != 'B' && robot->arena->map[robot->y][robot->x + 1] != 'O');
+    }
+    else if (robot->direction == 'S')
+    {
+        return (robot->arena->map[robot->y + 1][robot->x] != 'B' && robot->arena->map[robot->y + 1][robot->x] != 'O');
+    }
+    else if (robot->direction == 'W')
+    {
+        return (robot->arena->map[robot->y][robot->x - 1] != 'B' && robot->arena->map[robot->y][robot->x - 1] != 'O');
+    }
+    return 0;
 }
 
 void forward(Robot *robot)
@@ -120,5 +145,5 @@ void right(Robot *robot)
 
 int isAtHome(Robot *robot)
 {
-    return robotIsAtHome(robot->arena, robot);
+    return (robot->x == robot->arena->robotHomeX && robot->y == robot->arena->robotHomeY);
 }
