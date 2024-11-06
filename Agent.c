@@ -25,9 +25,13 @@ void rotateRobot(int targetDirection, Robot *robot, Agent *agent);
 void resetSearchMap(Agent *agent);
 void checkRobotAtHome(Robot *robot, Agent *agent);
 void checkRobotAtMarker(Robot *robot);
+int checkTermination(Agent *agent, Robot *robot);
 
-void operateRobot(Robot *robot, Agent *agent)
+int operateRobot(Robot *robot, Agent *agent)
 {
+    if (checkTermination(agent, robot))
+        return 0;
+
     checkRobotAtHome(robot, agent);
     checkRobotAtMarker(robot);
 
@@ -40,6 +44,12 @@ void operateRobot(Robot *robot, Agent *agent)
         agentForward(agent, robot);
     else
         rotateRobot(targetDirection, robot, agent);
+    return 1;
+}
+
+int checkTermination(Agent *agent, Robot *robot)
+{
+    return agent->terminationCounter >= 3 && robot->markers == 0;
 }
 
 void checkRobotAtMarker(Robot *robot)
@@ -69,6 +79,9 @@ void checkRobotAtHome(Robot *robot, Agent *agent)
 
 void agentForward(Agent *agent, Robot *robot)
 {
+    // Reset the termination counter
+    agent->terminationCounter = 0;
+
     DirectionVector dVec = getDirectionVector(agent->curDirection);
     agent->curPosition.x += dVec.x;
     agent->curPosition.y += dVec.y;
@@ -90,6 +103,9 @@ void agentForward(Agent *agent, Robot *robot)
 
 void rotateRobot(int targetDirection, Robot *robot, Agent *agent)
 {
+    // Three consecutive turns indicate exploration end
+    agent->terminationCounter++;
+
     switch (targetDirection)
     {
     case 1:

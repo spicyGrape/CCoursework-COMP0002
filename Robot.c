@@ -1,7 +1,7 @@
 #include "Robot.h"
 #include <stdlib.h>
 
-Robot *initRobot(int argc, char const **argv, Arena *arena)
+Robot *initRobot(int argc, char const **argv)
 {
     Robot *robot = (Robot *)malloc(sizeof(Robot));
     if (argc >= 3)
@@ -22,7 +22,6 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
         robot->y = DEFAULT_START_Y;
     }
     robot->markers = 0;
-    robot->arena = arena;
     return robot;
 }
 

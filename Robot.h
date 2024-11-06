@@ -35,7 +35,7 @@ typedef struct robot
 } Robot;
 
 #include <stdio.h>
-Robot *initRobot(int argc, char const **argv, Arena *arena);
+Robot *initRobot(int argc, char const **argv);
 
 // Required API for the robot
 void forward(Robot *robot);

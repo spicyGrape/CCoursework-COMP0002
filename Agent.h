@@ -19,9 +19,12 @@ typedef struct
     int tracingBack;
 
     int foundHome;
+
+    // Terminate when it reaches 3
+    int terminationCounter;
 } Agent;
 
 // Interface
 Agent *initAgent();
-void operateRobot(Robot *robot, Agent *agent);
+int operateRobot(Robot *robot, Agent *agent);
 #endif
