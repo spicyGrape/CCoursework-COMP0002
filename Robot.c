@@ -18,8 +18,8 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
     }
     else
     {
-        robot->x = DEFAULT_START_X;
-        robot->y = DEFAULT_START_Y;
+        robot->x = DEFAULT_START_X + rand() % (arena->width - 2 * DEFAULT_START_X);
+        robot->y = DEFAULT_START_Y + rand() % (arena->height - 2 * DEFAULT_START_Y);
     }
     if (argc >= 5)
     {
