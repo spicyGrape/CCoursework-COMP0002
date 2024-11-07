@@ -83,8 +83,9 @@ int robotCanreachHome(const Arena *arena, Robot *robot)
     }
     sandbox.map[robot->y][robot->x] = ' ';
     spread(&sandbox, robot->x, robot->y, '\0');
+    int canReachHome = sandbox.map[robot->homeY][robot->homeX] == ' ';
     freeMap(&sandbox);
-    return sandbox.map[robot->homeY][robot->homeX] == ' ';
+    return canReachHome;
 }
 
 int isValidCorrdinate(Arena *arena, int x, int y)
