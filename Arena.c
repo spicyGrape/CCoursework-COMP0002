@@ -82,10 +82,9 @@ char **initMap(Arena *arena)
     char **map = (char **)malloc(arena->height * sizeof(char *));
     for (int i = 0; i < arena->height; i++)
     {
-        map[i] = (char *)malloc(arena->width * sizeof(char));
+        map[i] = (char *)calloc(arena->width, sizeof(char));
 
-        // set all tiles to ' ' (empty) by default
-        memset(map[i], ' ', arena->width);
+        // set all tiles to 0, representing uninitialized
     }
     return map;
 }
