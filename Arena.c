@@ -19,7 +19,7 @@ void visualizeAction(Arena *arena, Robot *robot);
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
-// R - Robot, X - Robot with marker
+// R - Robot, X - Robot with marker, H - Home, T - Robot at home
 // char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
 
 void initBorder(Arena *arena)
@@ -136,13 +136,18 @@ void updateMap(Arena *arena, Robot *robot)
             }
             if (i == robot->y && j == robot->x)
             {
-                if (arena->map[i][j] == 'M')
+                char *targetTile = &arena->map[i][j];
+                if (*targetTile == 'M')
                 {
-                    arena->map[i][j] = 'X';
+                    *targetTile = 'X';
+                }
+                else if (*targetTile == 'H')
+                {
+                    *targetTile = 'T';
                 }
                 else
                 {
-                    arena->map[i][j] = 'R';
+                    *targetTile = 'R';
                 }
             }
         }
