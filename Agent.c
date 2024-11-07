@@ -25,8 +25,9 @@ void rotateRobot(int targetDirection, Robot *robot, Agent *agent);
 void resetSearchMap(Agent *agent);
 void checkRobotAtHome(Robot *robot, Agent *agent);
 void checkRobotAtMarker(Robot *robot);
+int checkTerminalCondition(Robot *robot, Agent *agent);
 
-void operateRobot(Robot *robot, Agent *agent)
+int operateRobot(Robot *robot, Agent *agent)
 {
     checkRobotAtHome(robot, agent);
     checkRobotAtMarker(robot);
@@ -40,6 +41,9 @@ void operateRobot(Robot *robot, Agent *agent)
         agentForward(agent, robot);
     else
         rotateRobot(targetDirection, robot, agent);
+
+    // if should not terminate, return true
+    return !(checkTerminalCondition(robot, agent));
 }
 
 void checkRobotAtMarker(Robot *robot)
@@ -69,6 +73,8 @@ void checkRobotAtHome(Robot *robot, Agent *agent)
 
 void agentForward(Agent *agent, Robot *robot)
 {
+    agent->consecutiveTurns = 0;
+
     DirectionVector dVec = getDirectionVector(agent->curDirection);
     agent->curPosition.x += dVec.x;
     agent->curPosition.y += dVec.y;
@@ -90,6 +96,8 @@ void agentForward(Agent *agent, Robot *robot)
 
 void rotateRobot(int targetDirection, Robot *robot, Agent *agent)
 {
+    agent->consecutiveTurns++;
+
     switch (targetDirection)
     {
     case 1:
@@ -194,6 +202,7 @@ Agent *initAgent()
     agent->curPosition.y = MEMORY_MAP_SIZE / 2;
     agent->curDirection = 0;
     agent->foundHome = 0;
+    agent->consecutiveTurns = 0;
 
     // Initialize the Search Depth Map
     resetSearchMap(agent);
@@ -214,4 +223,10 @@ void resetSearchMap(Agent *agent)
     agent->currentSearchDepth = 1;
     agent->searchDepthMap[agent->curPosition.y][agent->curPosition.x] = agent->currentSearchDepth;
     agent->tracingBack = 0;
+}
+
+int checkTerminalCondition(Robot *robot, Agent *agent)
+{
+    // True if should terminate
+    return agent->consecutiveTurns > 3 && isAtHome(robot) && robot->markers == 0;
 }

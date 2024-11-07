@@ -19,9 +19,10 @@ typedef struct
     int tracingBack;
 
     int foundHome;
+    int consecutiveTurns;
 } Agent;
 
 // Interface
 Agent *initAgent();
-void operateRobot(Robot *robot, Agent *agent);
+int operateRobot(Robot *robot, Agent *agent);
 #endif

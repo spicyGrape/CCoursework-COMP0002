@@ -14,6 +14,8 @@ void initMarkers(Arena *arena);
 void initObstacles(Arena *arena);
 char **initMap(Arena *arena);
 void updateMap(Arena *arena, Robot *robot);
+void freeMemory(Arena *arena, Robot *robot, Agent *agent);
+void visualizeAction(Arena *arena, Robot *robot);
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
@@ -148,26 +150,54 @@ void updateMap(Arena *arena, Robot *robot)
 }
 
 /*
-main function Expecting:
+Expecting:
 1. The size of the map, including the thickness of the border: '(width, height)'
   - User is responsible for ensuring that the robot is not placed by the wall
 2. Robot initial position: E, W, S, N
 3. Robot initial position: '(x, y)'
 4. Robot home position: '(x, y)'
 */
-int main(int argc, char const **argv)
+void launchArena(int argc, const char **argv)
 {
     Arena *arena = initArena(argc, argv);
     Robot *robot = initRobot(argc, argv, arena);
     Agent *agent = initAgent();
     updateMap(arena, robot);
     initView(arena, robot);
-    while (1)
+    while (operateRobot(robot, agent))
     {
-        operateRobot(robot, agent);
-        updateMap(arena, robot);
-        drawMap(arena);
-        drawMovingRobot(robot);
+        visualizeAction(arena, robot);
     }
+
+    // Draw the final map
+    visualizeAction(arena, robot);
+
+    // Free memory
+    freeMemory(arena, robot, agent);
+}
+
+void visualizeAction(Arena *arena, Robot *robot)
+{
+    updateMap(arena, robot);
+    drawMap(arena);
+    drawMovingRobot(robot);
+}
+
+void freeMemory(Arena *arena, Robot *robot, Agent *agent)
+{
+    for (int i = 0; i < arena->height; i++)
+    {
+        free(arena->map[i]);
+    }
+    free(arena->map);
+    free(arena);
+    free(robot);
+    free(agent);
+}
+
+int main(int argc, char const **argv)
+{
+    launchArena(argc, argv);
+
     return 0;
 }
