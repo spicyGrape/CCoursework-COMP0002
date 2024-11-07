@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-// For random obstacle generation
 #include <time.h>
 
 // Private functions
@@ -181,7 +179,7 @@ void launchArena(int argc, const char **argv)
 
 void visualizeAction(Arena *arena, Robot *robot)
 {
-    updateRobotOnMap(arena, robot);
+    // updateRobotOnMap(arena, robot);
     drawMap(arena);
     drawMovingRobot(robot);
 }

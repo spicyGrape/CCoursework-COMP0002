@@ -37,9 +37,9 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
 
 void pickUpMarker(Robot *robot)
 {
-    if (robot->arena->map[robot->y][robot->x] == 'X')
+    if (robot->arena->map[robot->y][robot->x] == 'M')
     {
-        robot->arena->map[robot->y][robot->x] = 'R';
+        robot->arena->map[robot->y][robot->x] = ' ';
         robot->markers++;
     }
     return;
@@ -50,9 +50,9 @@ void dropMarker(Robot *robot)
     if (robot->markers > 0)
     {
         robot->markers--;
-        if (robot->arena->map[robot->y][robot->x] == 'R')
+        if (robot->arena->map[robot->y][robot->x] == ' ')
         {
-            robot->arena->map[robot->y][robot->x] = 'X';
+            robot->arena->map[robot->y][robot->x] = 'M';
         }
     }
     return;
@@ -65,7 +65,7 @@ int markerCount(Robot *robot)
 
 int atMarker(Robot *robot)
 {
-    return (robot->arena->map[robot->y][robot->x] == 'X');
+    return (robot->arena->map[robot->y][robot->x] == 'M');
 }
 
 int canMoveForward(Robot *robot)
