@@ -14,12 +14,37 @@ char **initMap(Arena *arena);
 void updateRobotOnMap(Arena *arena, Robot *robot);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
 void visualizeAction(Arena *arena, Robot *robot);
-void spread(Arena *arena, int x, int y, char toBeOverwritten);
+void spread(Arena *arena, int x, int y, char target);
+int isValidCorrdinate(Arena *arena, int x, int y);
+void trySpreadTile(Arena *arena, char currentTile, int x, int y, char target);
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
 // R - Robot, X - Robot with marker, H - Home, T - Robot at home
 // char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
+
+int isValidCorrdinate(Arena *arena, int x, int y)
+{
+    return x >= 0 && x < arena->width && y >= 0 && y < arena->height;
+}
+
+void trySpreadTile(Arena *arena, char currentTile, int x, int y, char target)
+{
+    if (isValidCorrdinate(arena, x, y) && arena->map[y][x] == target)
+    {
+        arena->map[y][x] = currentTile;
+        spread(arena, x, y, target);
+    }
+}
+
+void spread(Arena *arena, int x, int y, char target)
+{
+    char currentTile = arena->map[y][x];
+    trySpreadTile(arena, currentTile, x + 1, y, target);
+    trySpreadTile(arena, currentTile, x - 1, y, target);
+    trySpreadTile(arena, currentTile, x, y + 1, target);
+    trySpreadTile(arena, currentTile, x, y - 1, target);
+}
 
 void placeBorder(Arena *arena)
 {
