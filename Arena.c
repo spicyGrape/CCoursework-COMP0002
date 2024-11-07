@@ -19,8 +19,7 @@ int isValidCorrdinate(Arena *arena, int x, int y);
 void trySpreadTile(Arena *arena, char currentTile, int x, int y, char target);
 
 // 2D array to store the arena map
-// B - Border, M - Marker, O - Obstacle, ' ' - Empty
-// R - Robot, X - Robot with marker, H - Home, T - Robot at home
+// B - Border, M - Marker, O - Obstacle, ' ' - Reachable tile
 // char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
 
 int isValidCorrdinate(Arena *arena, int x, int y)
@@ -67,17 +66,23 @@ void placeBorder(Arena *arena)
 
 void placeMarkers(Arena *arena, Robot *robot)
 {
+    srand(time(NULL));
     // Set tiles with a marker to 'M'
     for (int i = 1; i < arena->height - 1; i++)
     {
         for (int j = 1; j < arena->width - 1; j++)
         {
-            arena->map[i][j] = 'M';
+            if (arena->map[i][j] == ' ')
+            {
+                if (rand() % 100 < 30)
+                {
+                    arena->map[i][j] = 'M';
+                }
+            }
         }
     }
     return;
 }
-
 void placeObstacles(Arena *arena, Robot *robot)
 {
     srand(time(NULL));
@@ -90,7 +95,7 @@ void placeObstacles(Arena *arena, Robot *robot)
         {
             if (arena->map[i][j] != 'B' && !(i == robot->y && j == robot->x))
             {
-                if (rand() % 100 < 10)
+                if (rand() % 100 < 20)
                 {
                     arena->map[i][j] = 'O';
                 }
@@ -131,12 +136,12 @@ Arena *initArena(int argc, char const **argv)
     return arena;
 }
 
-void setUpArena(int argc, const char **argv, Arena *arena, Robot *robot)
+void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
 {
-
-    // Set all tiles to ' ', representing empty tiles
-    placeMarkers(arena, robot);
     placeObstacles(arena, robot);
+    arena->map[robot->y][robot->x] = ' ';
+    spread(arena, robot->x, robot->y, '\0');
+    placeMarkers(arena, robot);
 }
 
 void updateRobotOnMap(Arena *arena, Robot *robot)
@@ -185,7 +190,7 @@ void launchArena(int argc, const char **argv)
 {
     Arena *arena = initArena(argc, argv);
     Robot *robot = initRobot(argc, argv, arena);
-    setUpArena(argc, argv, arena, robot);
+    setupArena(argc, argv, arena, robot);
     Agent *agent = initAgent();
     updateRobotOnMap(arena, robot);
     initView(arena, robot);
