@@ -213,7 +213,6 @@ Arena *initArena(int argc, char const **argv)
 void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
 {
     placeObstacles(arena, robot);
-    spreadBorder(arena);
 
     // Mark all reachable tiles
     arena->map[robot->y][robot->x] = ' ';
@@ -221,6 +220,9 @@ void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
 
     placeMarkers(arena, robot);
     fillAllUninitializedTiles(arena);
+
+    // Obstacles adjacent to the border are considered as borders
+    spreadBorder(arena);
 }
 
 /*
