@@ -200,8 +200,8 @@ Arena *initArena(int argc, char const **argv)
     else
     {
         srand(time(NULL));
-        arena->width = DEFAULT_ARENA_WIDTH + rand() % 6;
-        arena->height = DEFAULT_ARENA_HEIGHT + rand() % 6;
+        arena->width = DEFAULT_ARENA_WIDTH + rand() % (MAX_ARENA_WIDTH - DEFAULT_ARENA_WIDTH);
+        arena->height = DEFAULT_ARENA_HEIGHT + rand() % (MAX_ARENA_HEIGHT - DEFAULT_ARENA_HEIGHT);
     }
 
     arena->map = initMap(arena);

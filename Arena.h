@@ -3,6 +3,8 @@
 #define TILE_WIDTH 30
 #define DEFAULT_ARENA_WIDTH 14
 #define DEFAULT_ARENA_HEIGHT 10
+#define MAX_ARENA_HEIGHT 20
+#define MAX_ARENA_WIDTH 30
 #include "Robot.h"
 
 typedef struct arena
