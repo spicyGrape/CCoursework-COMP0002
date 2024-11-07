@@ -67,7 +67,8 @@ void checkRobotAtHome(Robot *robot, Agent *agent)
             // so that the home becomes the root of the search tree
             resetSearchMap(agent);
         }
-        dropMarker(robot);
+        else if (robot->markers > 0)
+            dropMarker(robot);
     }
 }
 
