@@ -4,6 +4,14 @@
 void drawGrid(Arena *arena);
 void updateRobotCentre(Robot *robot);
 void drawMarkerNumber(Robot *robot);
+void drawHome(Robot *robot);
+
+void drawHome(Robot *robot)
+{
+    background();
+    setColour(blue);
+    fillOval(robot->homeX * TILE_WIDTH, robot->homeY * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+}
 
 void updateRobotVertices(Robot *robot)
 {
@@ -49,7 +57,7 @@ void updateRobotVertices(Robot *robot)
     updateRobotCentre(robot);
 }
 
-void drawMap(Arena *arena)
+void drawMap(Arena *arena, Robot *robot)
 {
     background();
     clear();
@@ -68,7 +76,7 @@ void drawMap(Arena *arena)
             }
 
             // Markers in gray
-            else if (arena->map[height][width] == 'M' || arena->map[height][width] == 'X')
+            else if (arena->map[height][width] == 'M')
             {
                 setColour(gray);
                 fillRect(width * TILE_WIDTH, height * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
@@ -82,6 +90,7 @@ void drawMap(Arena *arena)
             }
         }
     }
+    drawHome(robot);
     return;
 }
 
@@ -110,7 +119,7 @@ void initWindow(Arena *arena)
 void initView(Arena *arena, Robot *robot)
 {
     initWindow(arena);
-    drawMap(arena);
+    drawMap(arena, robot);
     updateRobotVertices(robot);
     drawRobot(robot);
     return;

@@ -254,7 +254,7 @@ void launchArena(int argc, const char **argv)
 void visualizeAction(Arena *arena, Robot *robot)
 {
     // updateRobotOnMap(arena, robot);
-    drawMap(arena);
+    drawMap(arena, robot);
     drawMovingRobot(robot);
 }
 

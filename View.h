@@ -9,7 +9,7 @@ typedef struct arena Arena;
 
 // Interface
 void initView(Arena *arena, Robot *robot);
-void drawMap(Arena *arena);
+void drawMap(Arena *arena, Robot *robot);
 void drawMovingRobot(Robot *robot);
 void drawTurnLeft(Robot *robot);
 void drawTurnRight(Robot *robot);
