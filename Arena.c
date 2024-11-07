@@ -9,9 +9,9 @@
 #include <time.h>
 
 // Private functions
-void initBorder(Arena *arena);
-void initMarkers(Arena *arena);
-void initObstacles(Arena *arena);
+void placeBorder(Arena *arena);
+void placeMarkers(Arena *arena);
+void placeObstacles(Arena *arena);
 char **initMap(Arena *arena);
 void updateMap(Arena *arena, Robot *robot);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
@@ -22,7 +22,7 @@ void visualizeAction(Arena *arena, Robot *robot);
 // R - Robot, X - Robot with marker, H - Home, T - Robot at home
 // char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
 
-void initBorder(Arena *arena)
+void placeBorder(Arena *arena)
 {
     // Set border to 'B'
     // Top and bottom border
@@ -41,7 +41,7 @@ void initBorder(Arena *arena)
     return;
 }
 
-void initMarkers(Arena *arena)
+void placeMarkers(Arena *arena)
 {
     // Set tiles with a marker to 'M'
     for (int i = 1; i < arena->height - 1; i++)
@@ -54,7 +54,7 @@ void initMarkers(Arena *arena)
     return;
 }
 
-void initObstacles(Arena *arena)
+void placeObstacles(Arena *arena)
 {
     // debug only
     srand(time(NULL));
@@ -102,6 +102,10 @@ Arena *initArena(int argc, char const **argv)
         arena->width = DEFAULT_ARENA_WIDTH;
         arena->height = DEFAULT_ARENA_HEIGHT;
     }
+
+    arena->map = initMap(arena);
+    placeBorder(arena);
+
     if (argc >= 5)
     {
         sscanf(argv[4], "(%d,%d)", &arena->robotHomeX, &arena->robotHomeY);
@@ -112,11 +116,9 @@ Arena *initArena(int argc, char const **argv)
         arena->robotHomeY = DEFAULT_ROBOT_HOME_Y;
     }
 
-    arena->map = initMap(arena);
     // Set all tiles to ' ', representing empty tiles
-    initBorder(arena);
-    initMarkers(arena);
-    initObstacles(arena);
+    placeMarkers(arena);
+    placeObstacles(arena);
     return arena;
 }
 
