@@ -6,6 +6,24 @@
 #include <stdio.h>
 #include <time.h>
 
+void printMap(Arena *arena, char **map)
+{
+    for (int i = 0; i < arena->height; i++)
+    {
+        for (int j = 0; j < arena->width; j++)
+        {
+            if (map[i][j] == '\0')
+            {
+                printf("0");
+            }
+            else
+                printf("%c", map[i][j]);
+        }
+        printf("\n");
+    }
+    for (;;)
+        ;
+}
 // Private functions
 void placeBorder(Arena *arena);
 void placeMarkers(Arena *arena, Robot *robot);
@@ -51,7 +69,17 @@ void spreadBorder(Arena *arena)
 
 int robotCanreachHome(const Arena *arena, Robot *robot)
 {
-    Arena sandbox = *arena;
+    Arena sandbox;
+    sandbox.width = arena->width;
+    sandbox.height = arena->height;
+    sandbox.map = initMap(&sandbox);
+    for (int i = 0; i < arena->height; i++)
+    {
+        for (int j = 0; j < arena->width; j++)
+        {
+            sandbox.map[i][j] = arena->map[i][j];
+        }
+    }
     sandbox.map[robot->y][robot->x] = ' ';
     spread(&sandbox, robot->x, robot->y, '\0');
     return sandbox.map[robot->homeY][robot->homeX] == ' ';
@@ -183,9 +211,13 @@ void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
 {
     placeObstacles(arena, robot);
     spreadBorder(arena);
+
+    // Mark all reachable tiles
     arena->map[robot->y][robot->x] = ' ';
     spread(arena, robot->x, robot->y, '\0');
+
     placeMarkers(arena, robot);
+    fillAllUninitializedTiles(arena);
 }
 
 /*
