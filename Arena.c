@@ -8,12 +8,13 @@
 
 // Private functions
 void placeBorder(Arena *arena);
-void placeMarkers(Arena *arena);
-void placeObstacles(Arena *arena);
+void placeMarkers(Arena *arena, Robot *robot);
+void placeObstacles(Arena *arena, Robot *robot);
 char **initMap(Arena *arena);
 void updateRobotOnMap(Arena *arena, Robot *robot);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
 void visualizeAction(Arena *arena, Robot *robot);
+void spread(Arena *arena, int x, int y, char toBeOverwritten);
 
 // 2D array to store the arena map
 // B - Border, M - Marker, O - Obstacle, ' ' - Empty
@@ -39,7 +40,7 @@ void placeBorder(Arena *arena)
     return;
 }
 
-void placeMarkers(Arena *arena)
+void placeMarkers(Arena *arena, Robot *robot)
 {
     // Set tiles with a marker to 'M'
     for (int i = 1; i < arena->height - 1; i++)
@@ -52,9 +53,8 @@ void placeMarkers(Arena *arena)
     return;
 }
 
-void placeObstacles(Arena *arena)
+void placeObstacles(Arena *arena, Robot *robot)
 {
-    // debug only
     srand(time(NULL));
 
     // Set obstacles to 'O'
@@ -63,7 +63,7 @@ void placeObstacles(Arena *arena)
     {
         for (int j = 0; j < arena->width; j++)
         {
-            if (arena->map[i][j] != 'B' && arena->map[i][j] != 'R')
+            if (arena->map[i][j] != 'B' && !(i == robot->y && j == robot->x))
             {
                 if (rand() % 100 < 10)
                 {
@@ -80,9 +80,8 @@ char **initMap(Arena *arena)
     char **map = (char **)malloc(arena->height * sizeof(char *));
     for (int i = 0; i < arena->height; i++)
     {
-        map[i] = (char *)calloc(arena->width, sizeof(char));
-
         // set all tiles to 0, representing uninitialized
+        map[i] = (char *)calloc(arena->width, sizeof(char));
     }
     return map;
 }
@@ -111,8 +110,8 @@ void setUpArena(int argc, const char **argv, Arena *arena, Robot *robot)
 {
 
     // Set all tiles to ' ', representing empty tiles
-    placeMarkers(arena);
-    placeObstacles(arena);
+    placeMarkers(arena, robot);
+    placeObstacles(arena, robot);
 }
 
 void updateRobotOnMap(Arena *arena, Robot *robot)
