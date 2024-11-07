@@ -30,6 +30,7 @@ void placeMarkers(Arena *arena, Robot *robot);
 void placeObstacles(Arena *arena, Robot *robot);
 char **initMap(Arena *arena);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
+void freeMap(Arena *arena);
 void visualizeAction(Arena *arena, Robot *robot);
 void spread(Arena *arena, int x, int y, char target);
 int isValidCorrdinate(Arena *arena, int x, int y);
@@ -82,6 +83,7 @@ int robotCanreachHome(const Arena *arena, Robot *robot)
     }
     sandbox.map[robot->y][robot->x] = ' ';
     spread(&sandbox, robot->x, robot->y, '\0');
+    freeMap(&sandbox);
     return sandbox.map[robot->homeY][robot->homeX] == ' ';
 }
 
@@ -255,14 +257,19 @@ void visualizeAction(Arena *arena, Robot *robot)
 
 void freeMemory(Arena *arena, Robot *robot, Agent *agent)
 {
+    freeMap(arena);
+    free(arena);
+    free(robot);
+    free(agent);
+}
+
+void freeMap(Arena *arena)
+{
     for (int i = 0; i < arena->height; i++)
     {
         free(arena->map[i]);
     }
     free(arena->map);
-    free(arena);
-    free(robot);
-    free(agent);
 }
 
 int main(int argc, char const **argv)
