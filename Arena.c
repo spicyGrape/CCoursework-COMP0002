@@ -18,6 +18,37 @@ void spread(Arena *arena, int x, int y, char target);
 int isValidCorrdinate(Arena *arena, int x, int y);
 void trySpreadTile(Arena *arena, char currentTile, int x, int y, char target);
 int robotCanreachHome(const Arena *arena, Robot *robot);
+void spreadBorder(Arena *arena);
+void fillAllUninitializedTiles(Arena *arena);
+
+void fillAllUninitializedTiles(Arena *arena)
+{
+    for (int i = 0; i < arena->height; i++)
+    {
+        for (int j = 0; j < arena->width; j++)
+        {
+            if (arena->map[i][j] == '\0')
+            {
+                arena->map[i][j] = arena->map[i][j - 1];
+            }
+        }
+    }
+}
+
+void spreadBorder(Arena *arena)
+{
+    for (int i = 0; i < arena->width; i++)
+    {
+        spread(arena, i, 0, 'O');
+        spread(arena, i, arena->height - 1, 'O');
+    }
+
+    for (int i = 0; i < arena->height; i++)
+    {
+        spread(arena, 0, i, 'O');
+        spread(arena, arena->width - 1, i, 'O');
+    }
+}
 
 int robotCanreachHome(const Arena *arena, Robot *robot)
 {
@@ -152,6 +183,7 @@ Arena *initArena(int argc, char const **argv)
 void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
 {
     placeObstacles(arena, robot);
+    spreadBorder(arena);
     arena->map[robot->y][robot->x] = ' ';
     spread(arena, robot->x, robot->y, '\0');
     placeMarkers(arena, robot);
