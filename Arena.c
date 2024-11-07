@@ -11,7 +11,6 @@ void placeBorder(Arena *arena);
 void placeMarkers(Arena *arena, Robot *robot);
 void placeObstacles(Arena *arena, Robot *robot);
 char **initMap(Arena *arena);
-void updateRobotOnMap(Arena *arena, Robot *robot);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
 void visualizeAction(Arena *arena, Robot *robot);
 void spread(Arena *arena, int x, int y, char target);
@@ -189,40 +188,6 @@ void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
     placeMarkers(arena, robot);
 }
 
-void updateRobotOnMap(Arena *arena, Robot *robot)
-{
-    for (int i = 0; i < arena->height; i++)
-    {
-        for (int j = 0; j < arena->width; j++)
-        {
-            if (arena->map[i][j] == 'R')
-            {
-                arena->map[i][j] = ' ';
-            }
-            else if (arena->map[i][j] == 'X')
-            {
-                arena->map[i][j] = 'M';
-            }
-            if (i == robot->y && j == robot->x)
-            {
-                char *targetTile = &arena->map[i][j];
-                if (*targetTile == 'M')
-                {
-                    *targetTile = 'X';
-                }
-                else if (*targetTile == 'H')
-                {
-                    *targetTile = 'T';
-                }
-                else
-                {
-                    *targetTile = 'R';
-                }
-            }
-        }
-    }
-}
-
 /*
 Expecting:
 1. The size of the map, including the thickness of the border: '(width, height)'
@@ -237,7 +202,6 @@ void launchArena(int argc, const char **argv)
     Robot *robot = initRobot(argc, argv, arena);
     setupArena(argc, argv, arena, robot);
     Agent *agent = initAgent();
-    updateRobotOnMap(arena, robot);
     initView(arena, robot);
     while (operateRobot(robot, agent))
     {
@@ -253,7 +217,6 @@ void launchArena(int argc, const char **argv)
 
 void visualizeAction(Arena *arena, Robot *robot)
 {
-    // updateRobotOnMap(arena, robot);
     drawMap(arena, robot);
     drawMovingRobot(robot);
 }
