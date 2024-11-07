@@ -17,10 +17,15 @@ void visualizeAction(Arena *arena, Robot *robot);
 void spread(Arena *arena, int x, int y, char target);
 int isValidCorrdinate(Arena *arena, int x, int y);
 void trySpreadTile(Arena *arena, char currentTile, int x, int y, char target);
+int robotCanreachHome(const Arena *arena, Robot *robot);
 
-// 2D array to store the arena map
-// B - Border, M - Marker, O - Obstacle, ' ' - Reachable tile
-// char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
+int robotCanreachHome(const Arena *arena, Robot *robot)
+{
+    Arena sandbox = *arena;
+    sandbox.map[robot->y][robot->x] = ' ';
+    spread(&sandbox, robot->x, robot->y, '\0');
+    return sandbox.map[robot->homeY][robot->homeX] == ' ';
+}
 
 int isValidCorrdinate(Arena *arena, int x, int y)
 {
@@ -93,11 +98,16 @@ void placeObstacles(Arena *arena, Robot *robot)
     {
         for (int j = 0; j < arena->width; j++)
         {
-            if (arena->map[i][j] != 'B' && !(i == robot->y && j == robot->x))
+            char *targetTile = &arena->map[i][j];
+            if (*targetTile != 'B' && !(i == robot->y && j == robot->x))
             {
                 if (rand() % 100 < 20)
                 {
-                    arena->map[i][j] = 'O';
+                    *targetTile = 'O';
+                    if (!robotCanreachHome(arena, robot))
+                    {
+                        *targetTile = '\0';
+                    }
                 }
             }
         }
@@ -107,6 +117,9 @@ void placeObstacles(Arena *arena, Robot *robot)
 
 char **initMap(Arena *arena)
 {
+    // 2D array to store the arena map
+    // B - Border, M - Marker, O - Obstacle, ' ' - Reachable tile
+    // char arena->map[DEFAULT_ARENA_HEIGHT][arena->width] = {};
     char **map = (char **)malloc(arena->height * sizeof(char *));
     for (int i = 0; i < arena->height; i++)
     {
