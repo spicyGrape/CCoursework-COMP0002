@@ -13,7 +13,7 @@ void placeBorder(Arena *arena);
 void placeMarkers(Arena *arena);
 void placeObstacles(Arena *arena);
 char **initMap(Arena *arena);
-void updateMap(Arena *arena, Robot *robot);
+void updateRobotOnMap(Arena *arena, Robot *robot);
 void freeMemory(Arena *arena, Robot *robot, Agent *agent);
 void visualizeAction(Arena *arena, Robot *robot);
 
@@ -106,23 +106,18 @@ Arena *initArena(int argc, char const **argv)
     arena->map = initMap(arena);
     placeBorder(arena);
 
-    if (argc >= 5)
-    {
-        sscanf(argv[4], "(%d,%d)", &arena->robotHomeX, &arena->robotHomeY);
-    }
-    else
-    {
-        arena->robotHomeX = DEFAULT_ROBOT_HOME_X;
-        arena->robotHomeY = DEFAULT_ROBOT_HOME_Y;
-    }
+    return arena;
+}
+
+void setUpArena(int argc, const char **argv, Arena *arena, Robot *robot)
+{
 
     // Set all tiles to ' ', representing empty tiles
     placeMarkers(arena);
     placeObstacles(arena);
-    return arena;
 }
 
-void updateMap(Arena *arena, Robot *robot)
+void updateRobotOnMap(Arena *arena, Robot *robot)
 {
     for (int i = 0; i < arena->height; i++)
     {
@@ -168,8 +163,9 @@ void launchArena(int argc, const char **argv)
 {
     Arena *arena = initArena(argc, argv);
     Robot *robot = initRobot(argc, argv, arena);
+    setUpArena(argc, argv, arena, robot);
     Agent *agent = initAgent();
-    updateMap(arena, robot);
+    updateRobotOnMap(arena, robot);
     initView(arena, robot);
     while (operateRobot(robot, agent))
     {
@@ -185,7 +181,7 @@ void launchArena(int argc, const char **argv)
 
 void visualizeAction(Arena *arena, Robot *robot)
 {
-    updateMap(arena, robot);
+    updateRobotOnMap(arena, robot);
     drawMap(arena);
     drawMovingRobot(robot);
 }

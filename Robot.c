@@ -21,6 +21,15 @@ Robot *initRobot(int argc, char const **argv, Arena *arena)
         robot->x = DEFAULT_START_X;
         robot->y = DEFAULT_START_Y;
     }
+    if (argc >= 5)
+    {
+        sscanf(argv[4], "(%d,%d)", &robot->homeX, &robot->homeY);
+    }
+    else
+    {
+        robot->homeX = robot->x;
+        robot->homeY = robot->y;
+    }
     robot->markers = 0;
     robot->arena = arena;
     return robot;
@@ -145,5 +154,5 @@ void right(Robot *robot)
 
 int isAtHome(Robot *robot)
 {
-    return (robot->x == robot->arena->robotHomeX && robot->y == robot->arena->robotHomeY);
+    return (robot->x == robot->homeX && robot->y == robot->homeY);
 }

@@ -18,6 +18,9 @@ typedef struct robot
     // y is inverted, 0 on top
     int y;
 
+    int homeX;
+    int homeY;
+
     int markers;
 
     // N, E, S, W for up, right, down, left
