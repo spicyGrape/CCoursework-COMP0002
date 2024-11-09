@@ -35,7 +35,7 @@ Replace `<map_width>`, `<map_height>`, `<robotX>`, `<robotY>`, `<homeX>`, `<home
 
 Replace `direction` with N, W, S or E.
 
-Example:
+Example for customized compile and run:
 ```shell
 gcc Arena.c Agent.c View.c Robot.c graphics.c -o COMP0002CW1 && ./COMP0002CW1 '(16, 12)' N '(6, 6)' '(7, 8)' | java -jar drawapp-4.0.jar
 ```
