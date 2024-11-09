@@ -23,7 +23,7 @@ To compile the program:
 gcc Arena.c Agent.c View.c Robot.c graphics.c -o COMP0002CW1
 ```
 
-To run (on Unix):
+To run:
 ```shell
 ./COMP0002CW1 | java -jar drawapp-4.0.jar
 ```
