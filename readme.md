@@ -6,7 +6,7 @@ The whole program consists of 4 modules (excluding the given graphics.c and grap
 3. View: Responsible for drawing map and robot animation.
 4. Agent: Responsible for robot control logic and algorithms.
 
-Each module is a pair of `.c` source file and `.h` header file. Interfaces (functions and variables that are supposed to be visited from outside the module) are declared in the `.h` header files. Implementations are in `.c` source files. **The main function** located in `Arena.c`, is where the whole program starts.
+ **The main function** is located in the `Arena.c`.
 
 ## What does the program do?
 A robot will visit and check all tiles, collect all markers and bring them back to its home. 
