@@ -225,6 +225,29 @@ void setupArena(int argc, const char **argv, Arena *arena, Robot *robot)
     spreadBorder(arena);
 }
 
+void visualizeAction(Arena *arena, Robot *robot)
+{
+    drawMap(arena, robot);
+    drawMovingRobot(robot);
+}
+
+void freeMemory(Arena *arena, Robot *robot, Agent *agent)
+{
+    freeMap(arena);
+    free(arena);
+    free(robot);
+    free(agent);
+}
+
+void freeMap(Arena *arena)
+{
+    for (int i = 0; i < arena->height; i++)
+    {
+        free(arena->map[i]);
+    }
+    free(arena->map);
+}
+
 /*
 Expecting:
 1. The size of the map, including the thickness of the border: '(width, height)'
@@ -250,29 +273,6 @@ void launchArena(int argc, const char **argv)
 
     // Free memory
     freeMemory(arena, robot, agent);
-}
-
-void visualizeAction(Arena *arena, Robot *robot)
-{
-    drawMap(arena, robot);
-    drawMovingRobot(robot);
-}
-
-void freeMemory(Arena *arena, Robot *robot, Agent *agent)
-{
-    freeMap(arena);
-    free(arena);
-    free(robot);
-    free(agent);
-}
-
-void freeMap(Arena *arena)
-{
-    for (int i = 0; i < arena->height; i++)
-    {
-        free(arena->map[i]);
-    }
-    free(arena->map);
 }
 
 int main(int argc, char const **argv)

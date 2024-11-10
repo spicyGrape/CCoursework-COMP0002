@@ -5,9 +5,6 @@
 #include "Agent.h"
 #include <limits.h>
 
-// debug only
-#include <stdio.h>
-
 // Private type and variables
 typedef struct
 {
@@ -36,13 +33,11 @@ int operateRobot(Robot *robot, Agent *agent)
     // Representing how many right turns from the current direction
     int targetDirection = findNextDirection(robot, agent);
 
-    // If targetDirection is current direction, move forward
     if (!targetDirection)
         agentForward(agent, robot);
     else
         rotateRobot(targetDirection, robot, agent);
 
-    // if should not terminate, return true
     return !(checkTerminalCondition(robot, agent));
 }
 
@@ -81,8 +76,6 @@ void agentForward(Agent *agent, Robot *robot)
     agent->curPosition.y += dVec.y;
     forward(robot);
 
-    // If the agent is going back, decrement the search depth
-    // Otherwise, increment the step count
     if (agent->tracingBack)
     {
         agent->currentSearchDepth--;
